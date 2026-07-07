@@ -164,6 +164,12 @@
   .dcirc.dark .pre{font-family:'Oswald',sans-serif;font-weight:500;font-size:8.5px;letter-spacing:2px;color:#cfcfd6;margin-bottom:3px}
   .dcirc.dark .nm{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;color:#fff;text-align:center;line-height:1.3}
   .dcirc.dark .nm i{font-style:normal;color:var(--ag-accent)}
+  .dcirc.dark .aglogo-dual{width:104px;height:auto;display:block;transform:translateX(5px)}
+  .dcirc.dark .ovl,.dcirc.dark .pre,.dcirc.dark .nm{display:none}
+  .dcirc.dark.nologo .aglogo-dual{display:none}
+  .dcirc.dark.nologo .ovl{display:block}
+  .dcirc.dark.nologo .pre{display:block}
+  .dcirc.dark.nologo .nm{display:block}
 
   .ft{margin-top:44px;padding-top:18px;border-top:1px solid var(--ag-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11.5px;color:#5b5b63}
   .ft a{color:#8a8a92;text-decoration:none}
@@ -178,6 +184,7 @@
     .sgchip{padding:6px 10px}
     .sgchip .t{font-size:12.5px}
     .dcirc{width:120px;height:120px}
+    .dcirc.dark .aglogo-dual{width:84px}
     .star{font-size:22px}
     .srow{padding:13px 13px}
   }
@@ -351,6 +358,8 @@
       <span class="t">Scholar<b>Guard</b><span class="tm">™</span></span>
     </div>
     <div class="dcirc dark">
+      <img class="aglogo-dual" src="agame-logo-white.png" alt="Steven Griffith's A-Game Coaching"
+           onerror="this.style.display='none';this.parentElement.classList.add('nologo')">
       <span class="ovl"></span>
       <span class="pre">STEVEN GRIFFITH&#8217;S</span>
       <span class="nm"><i>A-GAME</i><br>COACHING</span>
@@ -571,21 +580,4 @@ function demoSend(){
     source: 'agame-score-quiz-stars', ts: new Date().toISOString()
   };
   if(CONFIG.webhookUrl){
-    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  } else {
-    console.log('A-Game Score (stars) demo payload:', payload);
-  }
-  $('sent').style.display='block';
-}
-function restart(){
-  ratings = new Array(AREAS.length).fill(0); commit = 0; phase = -1;
-  $('starrows').innerHTML=''; $('commitstars').innerHTML='';
-  $('commitval').textContent='–'; $('commitrow').classList.remove('done');
-  $('toresults').disabled=true; $('tostep2').disabled=true;
-  ['pq1','pq2','pq3'].forEach(id=>$(id).value='');
-  setProgress(); show('s-intro');
-}
-setProgress();
-</script>
-</body>
-</html>
+    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:
