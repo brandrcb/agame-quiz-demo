@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate Your Athlete's Mindset | A-Game Coaching × ScholarGuard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     A-GAME SCORE™ — STAR RATING VERSION (v2 DRAFT)
+     Based on the 1-on-1 A-Game Coaching Application:
+     10 mindset areas rated 1–10 stars + 4 parent questions.
+     Branding: A-Game × ScholarGuard (gold accent).
+     ========================================================= */
+  :root{
+    --ag-black:#0b0b0d;
+    --ag-dark:#141417;
+    --ag-card:#1b1b1f;
+    /* Gold = ScholarGuard brand gold. If the exact site hex differs, change these two lines only. */
+    --ag-accent:#ffc629;
+    --ag-accent-hot:#ffd34d;
+    --ag-navy:#1e2a5a;
+    --ag-white:#ffffff;
+    --ag-grey:#9a9aa2;
+    --ag-line:#2a2a30;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--ag-black)}
+  body{font-family:'Inter',sans-serif;color:var(--ag-white);-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:800px;margin:0 auto;padding:28px 20px 60px}
+
+  /* header */
+  .hd{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:6px 0 22px;border-bottom:1px solid var(--ag-line)}
+  .sgword{text-decoration:none;display:inline-block}
+  .sgword .aglogo{height:56px;display:block}
+  .sgword .txt{display:none}
+  .sgword.nologo .txt{display:inline-block}
+  .sgword .ovl{display:block;height:2px;background:var(--ag-white);margin-bottom:6px}
+  .sgword .pre{display:block;font-family:'Oswald',sans-serif;font-weight:500;font-size:11px;letter-spacing:3px;color:#cfcfd6;white-space:nowrap;margin-bottom:2px}
+  .sgword .nm{font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;letter-spacing:3px;color:var(--ag-white);white-space:nowrap}
+  .sgword .nm i{font-style:normal;color:var(--ag-accent)}
+  .sgchip{display:flex;align-items:center;gap:9px;background:#fff;border-radius:8px;padding:8px 14px;text-decoration:none}
+  .sgchip svg{display:block;flex:none}
+  .sgchip .t{font-family:'Inter',sans-serif;font-size:16px;font-weight:500;color:var(--ag-navy);white-space:nowrap}
+  .sgchip .t b{font-weight:800}
+  .sgchip .tm{font-size:8px;vertical-align:super}
+
+  /* progress */
+  .prog{height:5px;background:var(--ag-line);margin:22px 0 30px;position:relative;border-radius:3px;overflow:hidden}
+  .prog>i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--ag-accent),var(--ag-accent-hot));width:0%;transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .stepcount{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--ag-grey);text-transform:uppercase;margin-bottom:10px}
+  .stepcount b{color:var(--ag-accent)}
+
+  .screen{display:none;animation:fade .4s ease}
+  .screen.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  h1{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(32px,6vw,50px);line-height:1.05;letter-spacing:.5px}
+  h1 .gold{color:var(--ag-accent)}
+  h2.q{font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;font-size:clamp(20px,4vw,28px);line-height:1.2;margin-bottom:6px}
+  .dim{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--ag-accent);text-transform:uppercase;margin-bottom:10px}
+  .sub{color:var(--ag-grey);font-size:16px;line-height:1.65;font-weight:300}
+  .sub b{color:var(--ag-white);font-weight:600}
+
+  .btn{display:inline-block;background:var(--ag-accent);color:#14142a;border:none;cursor:pointer;font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;text-transform:uppercase;letter-spacing:2px;padding:16px 38px;border-radius:4px;transition:all .2s;text-decoration:none;text-align:center}
+  .btn:hover{background:var(--ag-accent-hot);transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,198,41,.3)}
+  .btn.ghost{background:transparent;border:2px solid var(--ag-white);color:var(--ag-white)}
+  .btn.ghost:hover{border-color:var(--ag-accent);color:var(--ag-accent);box-shadow:none}
+  .btn.sm{padding:12px 22px;font-size:13px}
+  .btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+  .introgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:30px 0}
+  .icard{background:var(--ag-card);border:1px solid var(--ag-line);border-top:3px solid var(--ag-accent);padding:16px 14px;border-radius:4px}
+  .icard b{font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px}
+  .icard span{color:var(--ag-grey);font-size:13px;line-height:1.5;font-weight:300}
+
+  /* star rows */
+  .srow{background:var(--ag-card);border:1px solid var(--ag-line);border-radius:6px;padding:16px 18px;margin-bottom:12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;transition:border-color .2s}
+  .srow.done{border-color:var(--ag-accent)}
+  .srow .lab{flex:1;min-width:210px}
+  .srow .lab b{font-family:'Oswald',sans-serif;font-size:16.5px;text-transform:uppercase;letter-spacing:1px;display:block}
+  .srow .lab span{color:var(--ag-grey);font-size:12.5px;font-weight:300;line-height:1.45}
+  .stars{display:flex;align-items:center;gap:2px}
+  .star{background:none;border:none;cursor:pointer;font-size:26px;line-height:1;color:#3a3a42;padding:2px 1px;transition:color .08s,transform .08s}
+  .star.hov{color:var(--ag-accent-hot)}
+  .star.fill{color:var(--ag-accent)}
+  .star:hover{transform:scale(1.18)}
+  .sval{font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;width:44px;text-align:right;color:var(--ag-grey)}
+  .srow.done .sval{color:var(--ag-accent)}
+
+  /* parent questions */
+  .pq{margin-bottom:22px}
+  .pq label{font-family:'Oswald',sans-serif;font-size:15.5px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:8px}
+  .pq label .n{color:var(--ag-accent);font-weight:700;margin-right:6px}
+  .pq textarea{width:100%;min-height:84px;background:var(--ag-card);border:1px solid var(--ag-line);border-radius:6px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.6;resize:vertical}
+  .pq textarea:focus{outline:none;border-color:var(--ag-accent)}
+  .pq .opt{color:#5b5b63;font-size:11.5px;margin-top:5px}
+
+  .navrow{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px;flex-wrap:wrap}
+  .back{background:none;border:none;color:var(--ag-grey);font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:10px 0}
+  .back:hover{color:var(--ag-white)}
+  .remain{font-size:12.5px;color:#5b5b63}
+
+  /* results */
+  .scorewrap{display:flex;flex-wrap:wrap;gap:30px;align-items:center;margin:26px 0 10px}
+  .gauge{position:relative;width:230px;height:230px;flex:none;margin:0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .num b{font-family:'Oswald',sans-serif;font-size:64px;font-weight:700;line-height:1}
+  .gauge .num span{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--ag-grey);text-transform:uppercase;margin-top:4px}
+  .tierbadge{display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:2px;font-size:15px;padding:7px 16px;border-radius:3px;margin-bottom:10px}
+  .scoretxt{flex:1;min-width:250px}
+  .scoretxt p{color:var(--ag-grey);font-size:15px;line-height:1.7;font-weight:300;margin-top:8px}
+  .scoretxt p b{color:var(--ag-white);font-weight:600}
+
+  .panel{background:var(--ag-card);border:1px solid var(--ag-line);border-radius:6px;padding:26px 24px;margin:26px 0}
+  .panel h3{font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:1px;font-size:19px;margin-bottom:4px}
+  .panel h3 .gold{color:var(--ag-accent)}
+  .panel .hint{color:var(--ag-grey);font-size:13.5px;font-weight:300;margin-bottom:18px}
+
+  input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:4px;background:linear-gradient(90deg,#4a4a52 0%,#4a4a52 60%,#8a8a92 60%,#8a8a92 73%,var(--ag-accent) 73%,var(--ag-accent-hot) 100%);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:5px solid var(--ag-accent);cursor:grab;box-shadow:0 2px 10px rgba(0,0,0,.6)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:5px solid var(--ag-accent);cursor:grab}
+  .tickrow{display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:1.5px;color:var(--ag-grey);text-transform:uppercase;margin-top:8px}
+  .tickrow .elite{color:var(--ag-accent)}
+  .gapgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+  .gcell{background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;padding:14px 10px;text-align:center}
+  .gcell b{font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;display:block;line-height:1.1}
+  .gcell b.gold{color:var(--ag-accent)}
+  .gcell span{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ag-grey);font-family:'Oswald',sans-serif}
+  .pathline{margin-top:18px;font-size:14.5px;color:var(--ag-grey);font-weight:300;line-height:1.7}
+  .pathline b{color:var(--ag-white);font-weight:600}
+
+  .growth{display:flex;flex-direction:column;gap:12px}
+  .garea{display:flex;gap:16px;background:var(--ag-black);border:1px solid var(--ag-line);border-left:4px solid var(--ag-accent);border-radius:4px;padding:15px 16px;align-items:flex-start}
+  .garea .rank{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;color:var(--ag-accent);line-height:1;flex:none;width:30px}
+  .garea b{font-family:'Oswald',sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:1px;display:block}
+  .garea span{color:var(--ag-grey);font-size:13.5px;font-weight:300;line-height:1.55}
+  .garea span em{color:var(--ag-white);font-style:normal;font-weight:600}
+
+  .commit{border-left:4px solid var(--ag-accent);background:#211d10;padding:16px 18px;border-radius:4px;margin:26px 0;font-size:15px;line-height:1.7;font-weight:300;color:#efe8d2}
+  .commit b{color:#fff;font-weight:600}
+
+  .ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .ctarow .btn{flex:1;min-width:200px}
+
+  .demo{margin-top:34px;border:1px dashed #55555e;border-radius:6px;padding:20px 22px}
+  .demo h4{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:2px;font-size:13px;color:var(--ag-grey);margin-bottom:10px}
+  .demo .row{display:flex;gap:10px;flex-wrap:wrap}
+  .demo input[type=email]{flex:1;min-width:220px;background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:14px}
+  .demo input:focus{outline:none;border-color:var(--ag-accent)}
+  .demo .note{font-size:12px;color:#6f6f78;margin-top:10px;line-height:1.6}
+  .demo .sent{display:none;color:var(--ag-accent);font-size:14px;margin-top:10px}
+
+  /* dual logo (bottom of page only) */
+  .dual{display:flex;justify-content:center;align-items:center;margin:44px 0 0}
+  .dcirc{width:150px;height:150px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .dcirc.light{background:#f5f6f8;z-index:2}
+  .dcirc.light .t{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;color:var(--ag-navy);margin-top:7px}
+  .dcirc.light .t b{font-weight:800}
+  .dcirc.dark{border:1px solid var(--ag-line);margin-left:-26px}
+  .dcirc.dark .ovl{width:92px;height:2px;background:#fff;margin-bottom:7px}
+  .dcirc.dark .pre{font-family:'Oswald',sans-serif;font-weight:500;font-size:8.5px;letter-spacing:2px;color:#cfcfd6;margin-bottom:3px}
+  .dcirc.dark .nm{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;color:#fff;text-align:center;line-height:1.3}
+  .dcirc.dark .nm i{font-style:normal;color:var(--ag-accent)}
+
+  .ft{margin-top:44px;padding-top:18px;border-top:1px solid var(--ag-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11.5px;color:#5b5b63}
+  .ft a{color:#8a8a92;text-decoration:none}
+  .ft a:hover{color:var(--ag-accent)}
+
+  @media(max-width:620px){
+    .introgrid{grid-template-columns:1fr}
+    .gapgrid{grid-template-columns:repeat(2,1fr)}
+    .sgword .nm{font-size:14px;letter-spacing:2px}
+    .sgword .pre{font-size:9px;letter-spacing:2px}
+    .sgword .aglogo{height:42px}
+    .sgchip{padding:6px 10px}
+    .sgchip .t{font-size:12.5px}
+    .dcirc{width:120px;height:120px}
+    .star{font-size:22px}
+    .srow{padding:13px 13px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER: A-Game / Steven Griffith left · ScholarGuard right -->
+  <header class="hd">
+    <a class="sgword" href="https://agamecoach.com/" target="_blank" rel="noopener" aria-label="Steven Griffith's A-Game Coaching">
+      <img class="aglogo" src="agame-logo-white.png" alt="Steven Griffith's A-Game Coaching"
+           onerror="this.style.display='none';this.parentElement.classList.add('nologo')">
+      <span class="txt">
+        <span class="ovl"></span>
+        <span class="pre">STEVEN GRIFFITH&#8217;S</span>
+        <span class="nm"><i>A-GAME</i> COACHING</span>
+      </span>
+    </a>
+    <a class="sgchip" href="https://www.getscholarguard.com/" target="_blank" rel="noopener" aria-label="ScholarGuard">
+      <svg width="24" height="28" viewBox="0 0 100 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 26 L50 8 L93 26 V58 C93 85 74 101 50 111 C26 101 7 85 7 58 Z" stroke="var(--ag-accent)" stroke-width="7" stroke-linejoin="round"/>
+      </svg>
+      <span class="t">Scholar<b>Guard</b><span class="tm">™</span></span>
+    </a>
+  </header>
+
+  <div class="stepcount" id="stepcount" style="margin-top:22px"></div>
+  <div class="prog"><i id="progbar"></i></div>
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen on" id="s-intro">
+    <div class="dim">The A-Game Mindset Check™ for Parents</div>
+    <h1>Rate Your Athlete's <span class="gold">Mindset</span></h1>
+    <p class="sub" style="margin-top:16px">Score your student athlete from <b>1 to 10 stars</b> in the ten mindset areas Steven Griffith evaluates in every 1-on-1 coaching application — the same areas he trains with 40+ NFL players. You'll get their <b>A-Game Score</b>, their tier, and the exact path to the next level.</p>
+    <div class="introgrid">
+      <div class="icard"><b>Quick Stars</b><span>Ten areas, ten stars each. Go with your gut — first instinct is usually right.</span></div>
+      <div class="icard"><b>Instant Score</b><span>A 0–100 rating of your athlete's mental game, with their tier.</span></div>
+      <div class="icard"><b>A Real Plan</b><span>The A-Game Ready® modules that strengthen their weakest areas.</span></div>
+    </div>
+    <button class="btn" onclick="go(0)">Start Rating &nbsp;›</button>
+    <p class="sub" style="font-size:12.5px;margin-top:16px;color:#5b5b63">Created by Steven Griffith — 25+ years coaching athletes from high school to the NFL, NBA, MLB &amp; NHL.</p>
+  </section>
+
+  <!-- ============ STAR RATINGS ============ -->
+  <section class="screen" id="s-stars">
+    <div class="dim" id="ratedim">Categories Rated: 0 — Rate All Ten Areas</div>
+    <h2 class="q">How does your athlete rate right now?</h2>
+    <p class="sub" style="margin-bottom:22px">1 star = really struggling &nbsp;·&nbsp; 10 stars = elite. Rate the last few months, not their best day.</p>
+    <div id="starrows"></div>
+    <div class="navrow">
+      <button class="back" onclick="go(-1)">‹ &nbsp;Back</button>
+      <span class="remain" id="remain"></span>
+      <button class="btn" id="tostep2" disabled onclick="go(1)">Continue &nbsp;›</button>
+    </div>
+  </section>
+
+  <!-- ============ PARENT QUESTIONS ============ -->
+  <section class="screen" id="s-parent">
+    <div class="dim">Step 2 of 2 — Four Questions For You</div>
+    <h2 class="q">Now, the questions that matter most</h2>
+    <p class="sub" style="margin-bottom:24px">These come straight from Steven's 1-on-1 coaching application. Short, honest answers are perfect.</p>
+
+    <div class="pq">
+      <label><span class="n">1.</span>What skills and tools would you like your student athlete to have?</label>
+      <textarea id="pq1" placeholder="Confidence under pressure, bouncing back from mistakes, staying motivated..."></textarea>
+    </div>
+    <div class="pq">
+      <label><span class="n">2.</span>What do you think is stopping, stalling, or holding them back?</label>
+      <textarea id="pq2" placeholder="Be honest — this is where the coaching starts."></textarea>
+    </div>
+    <div class="pq">
+      <label><span class="n">3.</span>What do you think will happen if their current situation does not improve — in academics, athletics, and in life?</label>
+      <textarea id="pq3" placeholder="Think a season ahead, and a few years ahead."></textarea>
+    </div>
+    <div class="pq">
+      <label><span class="n">4.</span>What is your commitment level to helping them? (1–10)</label>
+      <div class="srow" id="commitrow" style="margin-top:4px">
+        <div class="lab"><b>Your Commitment</b><span>As their parent and biggest supporter</span></div>
+        <div class="stars" id="commitstars"></div>
+        <span class="sval" id="commitval">–</span>
+      </div>
+    </div>
+
+    <div class="navrow">
+      <button class="back" onclick="go(0)">‹ &nbsp;Back</button>
+      <button class="btn" id="toresults" disabled onclick="results()">See Their A-Game Score &nbsp;›</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="s-results">
+    <div class="dim">Your Athlete's Results</div>
+    <h1 style="font-size:clamp(28px,5vw,42px)">Here's How The <span class="gold">A-Game</span> Can Help</h1>
+
+    <div class="scorewrap">
+      <div class="gauge">
+        <svg width="230" height="230" viewBox="0 0 230 230">
+          <circle cx="115" cy="115" r="100" fill="none" stroke="#26262c" stroke-width="16"/>
+          <circle id="arc" cx="115" cy="115" r="100" fill="none" stroke="#ffc629" stroke-width="16"
+                  stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628"/>
+        </svg>
+        <div class="num"><b id="scorenum">0</b><span>A-Game Score</span></div>
+      </div>
+      <div class="scoretxt">
+        <span class="tierbadge" id="tierbadge"></span>
+        <h2 class="q" id="tiertitle" style="font-size:26px"></h2>
+        <p id="tierdesc"></p>
+      </div>
+    </div>
+
+    <div class="commit" id="commitmsg"></div>
+
+    <!-- EXPECTATION SLIDER -->
+    <div class="panel">
+      <h3>What's your expectation for your athlete? <span class="gold">Slide to set it.</span></h3>
+      <p class="hint">Move the bar and watch the path adjust — Average 70–87 · Exceptional 88–91 · Elite 92–100</p>
+      <div class="sliderrow">
+        <input type="range" id="target" min="70" max="100" value="92" step="1" aria-label="Expectation for your athlete">
+        <div class="tickrow"><span>70 · Average</span><span>88 · Exceptional</span><span class="elite">92–100 · Elite</span></div>
+      </div>
+      <div class="gapgrid">
+        <div class="gcell"><b id="g-now">–</b><span>Today</span></div>
+        <div class="gcell"><b class="gold" id="g-target">–</b><span id="g-tiername">Your Goal</span></div>
+        <div class="gcell"><b class="gold" id="g-gap">–</b><span>Point Gap</span></div>
+        <div class="gcell"><b id="g-weeks">–</b><span id="g-weekslbl">Est. Weeks</span></div>
+      </div>
+      <p class="pathline" id="pathline"></p>
+    </div>
+
+    <!-- GROWTH AREAS -->
+    <div class="panel">
+      <h3>Your Athlete's Top 3 <span class="gold">Growth Areas</span></h3>
+      <p class="hint">The three lowest-rated areas — each mapped to the A-Game Ready® module built to strengthen it.</p>
+      <div class="growth" id="growth"></div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="panel" style="border-top:3px solid var(--ag-accent)">
+      <h3>Start Closing The Gap <span class="gold">This Week</span></h3>
+      <p class="hint">A-Game Ready® online training is included FREE with every ScholarGuard™ policy — or available directly.</p>
+      <div class="ctarow">
+        <a class="btn" href="https://steven-griffith.mykajabi.com/a-game-ready-coaching" target="_blank" rel="noopener">Explore The Course</a>
+        <a class="btn" href="https://steven-griffith.mykajabi.com/offers/WfP2huy3/checkout" target="_blank" rel="noopener" style="background:#1b1b1f;border:2px solid var(--ag-accent);color:#fff">Enroll Now</a>
+        <a class="btn ghost" href="https://www.getscholarguard.com/" target="_blank" rel="noopener">ScholarGuard Protection</a>
+      </div>
+    </div>
+
+    <!-- DEMO EMAIL CAPTURE -->
+    <div class="demo">
+      <h4>Email My Athlete's Full Score Report</h4>
+      <div class="row">
+        <input type="email" id="email" placeholder="parent@email.com" aria-label="Email address">
+        <button class="btn sm" onclick="demoSend()">Send Report</button>
+      </div>
+      <div class="sent" id="sent">✓ Demo mode — in production this instantly emails the parent's score report (including their four written answers) and notifies the A-Game × ScholarGuard team.</div>
+      <p class="note">DEMO BUILD: form submission is not yet connected. On approval, wire <code>CONFIG.webhookUrl</code> (top of the script) to your email platform / CRM webhook — the payload includes all ten star ratings, the score, tier, target, commitment level, and the parent's written answers.</p>
+    </div>
+
+    <div class="navrow" style="margin-top:26px">
+      <button class="back" onclick="restart()">↺ &nbsp;Retake the assessment</button>
+    </div>
+  </section>
+
+  <!-- DUAL LOGO — bottom of page only -->
+  <div class="dual" aria-hidden="true">
+    <div class="dcirc light">
+      <svg width="40" height="46" viewBox="0 0 100 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 26 L50 8 L93 26 V58 C93 85 74 101 50 111 C26 101 7 85 7 58 Z" stroke="var(--ag-accent)" stroke-width="7" stroke-linejoin="round"/>
+      </svg>
+      <span class="t">Scholar<b>Guard</b><span class="tm">™</span></span>
+    </div>
+    <div class="dcirc dark">
+      <span class="ovl"></span>
+      <span class="pre">STEVEN GRIFFITH&#8217;S</span>
+      <span class="nm"><i>A-GAME</i><br>COACHING</span>
+    </div>
+  </div>
+
+  <footer class="ft">
+    <span>© <span id="yr"></span> Steven Griffith · A-Game Coaching × ScholarGuard™</span>
+    <span><a href="https://agamecoach.com/" target="_blank" rel="noopener">agamecoach.com</a> &nbsp;·&nbsp; <a href="https://www.getscholarguard.com/" target="_blank" rel="noopener">getscholarguard.com</a></span>
+  </footer>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG — production integration point
+   ===================================================================== */
+const CONFIG = {
+  webhookUrl: "",   // e.g. Zapier/Make webhook or CRM endpoint. Leave "" for demo.
+  courseUrl:  "https://steven-griffith.mykajabi.com/a-game-ready-coaching",
+  checkoutUrl:"https://steven-griffith.mykajabi.com/offers/WfP2huy3/checkout"
+};
+
+/* ---------- the 10 mindset areas (from the 1-on-1 coaching application) ---------- */
+const AREAS = [
+  {name:"Focus",                              hint:"Stays locked in during practice, games, and school",       mod:"Mastering the Moment: Performance Tools",     fix:"“Be where your feet are” — practical tools to hold focus under fire."},
+  {name:"Confidence",                         hint:"Believes in themselves, even after setbacks",              mod:"Foundation: Mindset & Confidence",            fix:"Real confidence built from preparation, presence, past wins, and self-talk."},
+  {name:"Time Management",                    hint:"Handles school, sport, and life without chaos",            mod:"Win the Day: Time Principles",                fix:"Daily structure that protects grades, performance, and sanity."},
+  {name:"Recovery From a Bad Performance",    hint:"Bounces back quickly after mistakes and losses",           mod:"Self-Compassion & The 3 As Reset",            fix:"Steven's secret weapon: in-the-moment resets so one mistake never becomes three."},
+  {name:"Communication",                      hint:"Speaks up with coaches, teammates, and family",            mod:"Receiving Feedback & Communication",          fix:"The feedback framework that turns hard conversations into fuel."},
+  {name:"Stress & Anxiety",                   hint:"Stays calm under pressure (10 = handles it well)",         mod:"Getting in the Zone: RPMs & Nervous System",  fix:"Learn to read their RPMs and regulate their nervous system on demand."},
+  {name:"Happiness & Fun",                    hint:"Still loves the game and enjoys competing",                mod:"Foundation: The 10 A-Game Principles",        fix:"Fun is a performance principle — playfulness plus seriousness is the elite formula."},
+  {name:"Motivation",                         hint:"Self-driven — doesn't need to be pushed",                  mod:"Athlete Inventory & The 4 Whys",              fix:"Find the emotional core that makes motivation automatic."},
+  {name:"Leadership",                         hint:"Sets the tone and lifts up teammates",                     mod:"Support Systems & Leadership",                fix:"Build the presence and voice that teammates follow — on and off the field."},
+  {name:"Academics",                          hint:"Performs in the classroom as well as the field",           mod:"Win the Day: Time & Academic Performance",    fix:"The same mental tools, pointed at the classroom — focus, routines, and confidence."}
+];
+const TIERS = [
+  {min:92, name:"ELITE",       color:"#ffc629", txt:"#14142a", title:"Playing at an Elite level",
+   desc:"A bulletproof mental game — the standard Steven holds professionals to. The mission now is protecting and refining it: pressure only increases from here, and elite athletes train their mind the way they train their body."},
+  {min:88, name:"EXCEPTIONAL", color:"#3a3a42", title:"Exceptional — knocking on the door",
+   desc:"A genuinely strong foundation with specific, fixable gaps. Athletes in this band see the fastest jump to Elite because the raw material is already there — they need targeted tools, not more effort."},
+  {min:70, name:"AVERAGE",     color:"#4a4a52", title:"A solid base — with real room to grow",
+   desc:"This is where most dedicated athletes sit, and where the biggest gains live. The difference between Average and Elite is almost never talent — it's mental skills nobody ever taught them."},
+  {min:0,  name:"DEVELOPING",  color:"#8a8a92", title:"The mental game is holding them back",
+   desc:"Their mind is currently costing them performances their body has already earned. That's urgent — and it's also the best news on this page, because these are the athletes who see visible change in weeks."}
+];
+
+/* ---------- state ---------- */
+let ratings = new Array(AREAS.length).fill(0);   // 1..10 each
+let commit = 0;                                   // 1..10
+const $ = id => document.getElementById(id);
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ---------- star row builder ---------- */
+function starRow(container, count, getVal, setVal){
+  const box = typeof container === 'string' ? $(container) : container;
+  box.innerHTML = '';
+  const btns = [];
+  for(let i=1;i<=count;i++){
+    const b = document.createElement('button');
+    b.className='star'; b.type='button'; b.textContent='★';
+    b.setAttribute('aria-label', i+' of '+count+' stars');
+    b.onmouseenter = ()=>btns.forEach((x,j)=>x.classList.toggle('hov', j<i && j>=getVal()));
+    b.onmouseleave = ()=>btns.forEach(x=>x.classList.remove('hov'));
+    b.onclick = ()=>{ setVal(i); paint(); };
+    btns.push(b); box.appendChild(b);
+  }
+  function paint(){ btns.forEach((x,j)=>{ x.classList.toggle('fill', j<getVal()); x.classList.remove('hov'); }); }
+  paint();
+  return paint;
+}
+
+function buildStarScreen(){
+  const host = $('starrows'); host.innerHTML='';
+  AREAS.forEach((a,idx)=>{
+    const row = document.createElement('div');
+    row.className='srow'; row.id='row'+idx;
+    row.innerHTML = `<div class="lab"><b>${a.name}</b><span>${a.hint}</span></div>
+                     <div class="stars" id="st${idx}"></div><span class="sval" id="sv${idx}">–</span>`;
+    host.appendChild(row);
+    starRow('st'+idx, 10, ()=>ratings[idx], v=>{
+      ratings[idx]=v;
+      $('sv'+idx).textContent = v+'/10';
+      row.classList.add('done');
+      updateStarNav();
+    });
+  });
+  updateStarNav();
+}
+function updateStarNav(){
+  const done = ratings.filter(v=>v>0).length;
+  $('ratedim').textContent = done<10
+    ? `Categories Rated: ${done} — Rate All Ten Areas`
+    : `Categories Rated: 10 — All Set!`;
+  $('remain').textContent = done<10 ? (10-done)+' area'+(done===9?'':'s')+' left' : 'All ten rated ✓';
+  $('tostep2').disabled = done<10;
+  setProgress();
+}
+
+/* ---------- navigation ---------- */
+let phase = -1; // -1 intro, 0 stars, 1 parent, 2 results
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $(id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setProgress(){
+  const rated = ratings.filter(v=>v>0).length;
+  const pqs = [commit>0].filter(Boolean).length;
+  let pct = phase<0? 0 : Math.min(100, Math.round(((rated + pqs) / 11) * 100));
+  if(phase===2) pct = 100;
+  $('progbar').style.width = pct+'%';
+  $('stepcount').innerHTML =
+    phase===0 ? `Step <b>1</b> of 2 — Rate Your Athlete` :
+    phase===1 ? `Step <b>2</b> of 2 — four questions for you` :
+    phase===2 ? `<b>Assessment complete</b>` : '';
+}
+function go(p){
+  phase = p;
+  if(p===-1){ show('s-intro'); }
+  if(p===0){ if(!$('starrows').children.length) buildStarScreen(); show('s-stars'); }
+  if(p===1){
+    if(!$('commitstars').children.length){
+      starRow('commitstars', 10, ()=>commit, v=>{
+        commit=v; $('commitval').textContent=v+'/10';
+        $('commitrow').classList.add('done');
+        $('toresults').disabled=false; setProgress();
+      });
+    }
+    show('s-parent');
+  }
+  setProgress();
+}
+
+/* ---------- scoring ---------- */
+function calcScore(){ return ratings.reduce((a,b)=>a+b,0); }   // 10 areas × 1–10 = 10..100
+function tierFor(s){ return TIERS.find(t=>s>=t.min); }
+
+function results(){
+  phase = 2; setProgress();
+  const score = calcScore();
+  const tier = tierFor(score);
+  $('tierbadge').textContent = tier.name;
+  $('tierbadge').style.background = tier.color;
+  $('tierbadge').style.color = tier.txt || '#fff';
+  $('tiertitle').textContent = tier.title;
+  $('tierdesc').innerHTML = tier.desc + ` &nbsp;Current rating: <b>${score}/100 — ${tier.name.charAt(0)+tier.name.slice(1).toLowerCase()}</b>.`;
+
+  $('commitmsg').innerHTML = commit>=8
+    ? `You rated your commitment <b>${commit}/10</b>. That matters more than any score on this page — parental support is the single biggest multiplier in Steven's program. Your athlete is lucky to have you in their corner.`
+    : commit>0
+    ? `You rated your commitment <b>${commit}/10</b> — honest, and a great starting point. The Parent Resources inside A-Game Ready are built to make supporting your athlete easier, not harder.`
+    : ``;
+
+  show('s-results');
+
+  let n=0;
+  const arc = $('arc');
+  const anim = setInterval(()=>{
+    n++;
+    if(n>=score){n=score;clearInterval(anim);}
+    $('scorenum').textContent=n;
+    arc.style.strokeDashoffset = 628 - (628*n/100);
+    arc.style.stroke = n>=92? '#ffc629' : n>=88? '#ffd34d' : n>=70? '#c9c9d1' : '#8a8a92';
+  }, 14);
+
+  // growth areas: 3 lowest-rated
+  const ranked = ratings.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v).slice(0,3);
+  $('growth').innerHTML = ranked.map((r,k)=>{
+    const a = AREAS[r.i];
+    return `<div class="garea"><div class="rank">${k+1}</div><div>
+      <b>${a.name} — ${r.v}/10</b>
+      <span>${a.fix}<br>→ Recommended: <em>${a.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#ffd34d;text-decoration:none;font-weight:600">Preview this module ›</a></span>
+    </div></div>`;
+  }).join('');
+
+  const slider = $('target');
+  slider.oninput = ()=>updateGap(score);
+  updateGap(score);
+}
+
+function targetTierName(t){ return t>=92? 'Elite' : t>=88? 'Exceptional' : 'Average'; }
+function updateGap(score){
+  const t = +$('target').value;
+  const gap = Math.max(0, t - score);
+  const weeks = gap===0? 0 : Math.max(2, Math.round(gap*0.75));
+  const mods  = gap===0? 0 : Math.min(8, Math.max(2, Math.ceil(gap/4)));
+  $('g-now').textContent = score;
+  $('g-target').textContent = t;
+  $('g-tiername').textContent = targetTierName(t)+' Goal';
+  $('g-gap').textContent = gap;
+  $('g-weeks').textContent = gap===0? '✓' : '~'+weeks;
+  $('g-weekslbl').textContent = gap===0? 'Goal met' : 'Est. weeks*';
+  $('pathline').innerHTML = gap===0
+    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
+    : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: approximately <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> over an estimated <b>${weeks} weeks</b> of consistent practice — starting with the three growth areas below. <span style="font-size:11.5px;color:#5b5b63">*Estimate based on the program's 1%-better-per-day progression; individual pace varies.</span>`;
+}
+
+/* ---------- demo email ---------- */
+function demoSend(){
+  const email = $('email').value.trim();
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#ffc629'; return; }
+  $('email').style.borderColor='var(--ag-line)';
+  const score = calcScore(), target = +$('target').value;
+  const ga = ratings.map((v,i)=>({area:AREAS[i].name, module:AREAS[i].mod, stars:v}))
+                    .sort((a,b)=>a.stars-b.stars).slice(0,3);
+  // Flat fields = easy 1:1 merge fields in Zapier/Make email templates
+  const payload = {
+    email, score, tier: tierFor(score).name, target,
+    gap: Math.max(0, target - score),
+    commitment: commit,
+    growth1_area: ga[0].area, growth1_module: ga[0].module,
+    growth2_area: ga[1].area, growth2_module: ga[1].module,
+    growth3_area: ga[2].area, growth3_module: ga[2].module,
+    ratings_summary: AREAS.map((a,i)=>a.name+' '+ratings[i]+'/10').join(', '),
+    skillsWanted: $('pq1').value.trim(),
+    holdingBack:  $('pq2').value.trim(),
+    ifNoChange:   $('pq3').value.trim(),
+    source: 'agame-score-quiz-stars', ts: new Date().toISOString()
+  };
+  if(CONFIG.webhookUrl){
+    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  } else {
+    console.log('A-Game Score (stars) demo payload:', payload);
+  }
+  $('sent').style.display='block';
+}
+function restart(){
+  ratings = new Array(AREAS.length).fill(0); commit = 0; phase = -1;
+  $('starrows').innerHTML=''; $('commitstars').innerHTML='';
+  $('commitval').textContent='–'; $('commitrow').classList.remove('done');
+  $('toresults').disabled=true; $('tostep2').disabled=true;
+  ['pq1','pq2','pq3'].forEach(id=>$(id).value='');
+  setProgress(); show('s-intro');
+}
+setProgress();
+</script>
+</body>
+</html>
