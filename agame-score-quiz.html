@@ -356,7 +356,15 @@ const QUESTIONS = [
   {dim:"Energy & Burnout",      rev:true, q:"My athlete shows signs of low energy, lack of motivation, and burnout.",
    mod:"Low-RPMs Activation & Recovery Tools", fix:"Re-ignite drive and recover mind and body before burnout wins."},
   {dim:"Support System",        q:"My athlete has positive role models and mentors supporting them on and off the field.",
-   mod:"Leveraging Your Support Systems", fix:"Build the corner every elite athlete has — mentors, parents, tools."}
+   mod:"Leveraging Your Support Systems", fix:"Build the corner every elite athlete has — mentors, parents, tools."},
+  {dim:"Communication",         q:"My athlete effectively communicates with coaches, teammates and parents.",
+   mod:"Communication & Team Chemistry", fix:"The scripts and habits that turn tough talks with coaches, teammates, and parents into trust."},
+  {dim:"Academics",             q:"My athlete is successful academically while participating in sports.",
+   mod:"Student-Athlete Balance: Grades & Game", fix:"Systems that keep grades strong without draining energy from performance."},
+  {dim:"Having Fun",            q:"My athlete has fun in both practice and competition.",
+   mod:"Playing Free: Joy & The Inner Game", fix:"Reconnect them to why they love the game — where their most relaxed, best performance lives."},
+  {dim:"Self-Talk",             q:"My athlete knows how to maintain a positive self-image and self-talk during the highs and the lows of competition.",
+   mod:"Self-Talk & Self-Image Mastery", fix:"Train the inner voice so it fuels performance through both the highs and the lows."}
 ];
 const FEEL = {
   dim:"One Last Question — For You",
@@ -385,7 +393,7 @@ const TIERS = [
 ];
 
 /* ---------- state ---------- */
-let step = -1;                 // -1 intro, 0..9 questions, 10 feel question
+let step = -1;                 // -1 intro, 0..(N-1) questions, N feel question
 let answers = new Array(QUESTIONS.length).fill(0);
 let feelIdx = 0;
 const TOTAL = QUESTIONS.length + 1;
@@ -439,8 +447,11 @@ function renderQ(){
 // so agreeing strongly = worse. eff() normalizes so 5 is always "good".
 const eff = i => QUESTIONS[i].rev ? 6 - answers[i] : answers[i];
 function calcScore(){
-  const raw = answers.reduce((a,_,i)=>a+eff(i),0);   // 10..50
-  return Math.round(40 + raw*1.2);                    // 52..100
+  const n = QUESTIONS.length;                          // number of scored questions
+  const raw = answers.reduce((a,_,i)=>a+eff(i),0);     // n..5n
+  // Normalize to a 52..100 scale (floor 52 for all-lowest, 100 for all-highest),
+  // so the score stays consistent no matter how many questions there are.
+  return Math.round(52 + ((raw - n) / (4 * n)) * 48);
 }
 function tierFor(s){ return TIERS.find(t=>s>=t.min); }
 
@@ -500,22 +511,4 @@ function updateGap(score){
   $('g-weeks').textContent = gap===0? '✓' : '~'+weeks;
   $('g-weekslbl').textContent = gap===0? 'Goal met' : 'Est. weeks*';
   $('pathline').innerHTML = gap===0
-    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
-    : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: approximately <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> over an estimated <b>${weeks} weeks</b> of consistent practice — starting with the three growth areas below. <span style="font-size:11.5px;color:#5b5b63">*Estimate based on the program's 1%-better-per-day progression; individual pace varies.</span>`;
-}
-
-/* ---------- demo email ---------- */
-function demoSend(){
-  const email = $('email').value.trim();
-  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#ffc629'; return; }
-  $('email').style.borderColor='var(--ag-line)';
-  const score = calcScore(), target = +$('target').value;
-  const ga = answers.map((v,i)=>({area:QUESTIONS[i].dim, module:QUESTIONS[i].mod, rating:eff(i)}))
-                    .sort((a,b)=>a.rating-b.rating).slice(0,3);
-  // Flat fields = easy 1:1 merge fields in Zapier/Make email templates
-  const payload = {
-    email, score, tier: tierFor(score).name, target,
-    gap: Math.max(0, target - score),
-    feel: FEEL.opts[feelIdx],
-    growth1_area: ga[0].area, growth1_module: ga[0].module,
-    growth2_area: ga[1].area, growth2_module: 
+    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge
