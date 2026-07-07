@@ -580,4 +580,21 @@ function demoSend(){
     source: 'agame-score-quiz-stars', ts: new Date().toISOString()
   };
   if(CONFIG.webhookUrl){
-    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:
+    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  } else {
+    console.log('A-Game Score (stars) demo payload:', payload);
+  }
+  $('sent').style.display='block';
+}
+function restart(){
+  ratings = new Array(AREAS.length).fill(0); commit = 0; phase = -1;
+  $('starrows').innerHTML=''; $('commitstars').innerHTML='';
+  $('commitval').textContent='–'; $('commitrow').classList.remove('done');
+  $('toresults').disabled=true; $('tostep2').disabled=true;
+  ['pq1','pq2','pq3'].forEach(id=>$(id).value='');
+  setProgress(); show('s-intro');
+}
+setProgress();
+</script>
+</body>
+</html>

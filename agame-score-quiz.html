@@ -511,4 +511,40 @@ function updateGap(score){
   $('g-weeks').textContent = gap===0? '✓' : '~'+weeks;
   $('g-weekslbl').textContent = gap===0? 'Goal met' : 'Est. weeks*';
   $('pathline').innerHTML = gap===0
-    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge
+    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
+    : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: approximately <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> over an estimated <b>${weeks} weeks</b> of consistent practice — starting with the three growth areas below. <span style="font-size:11.5px;color:#5b5b63">*Estimate based on the program's 1%-better-per-day progression; individual pace varies.</span>`;
+}
+
+/* ---------- demo email ---------- */
+function demoSend(){
+  const email = $('email').value.trim();
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#ffc629'; return; }
+  $('email').style.borderColor='var(--ag-line)';
+  const score = calcScore(), target = +$('target').value;
+  const ga = answers.map((v,i)=>({area:QUESTIONS[i].dim, module:QUESTIONS[i].mod, rating:eff(i)}))
+                    .sort((a,b)=>a.rating-b.rating).slice(0,3);
+  // Flat fields = easy 1:1 merge fields in Zapier/Make email templates
+  const payload = {
+    email, score, tier: tierFor(score).name, target,
+    gap: Math.max(0, target - score),
+    feel: FEEL.opts[feelIdx],
+    growth1_area: ga[0].area, growth1_module: ga[0].module,
+    growth2_area: ga[1].area, growth2_module: ga[1].module,
+    growth3_area: ga[2].area, growth3_module: ga[2].module,
+    source: 'agame-score-quiz', ts: new Date().toISOString()
+  };
+  if(CONFIG.webhookUrl){
+    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  } else {
+    console.log('A-Game Score demo payload:', payload);
+  }
+  $('sent').style.display='block';
+}
+function restart(){
+  answers = new Array(QUESTIONS.length).fill(0); feelIdx=0; step=-1;
+  setProgress(); show('s-intro');
+}
+setProgress();
+</script>
+</body>
+</html>
