@@ -17,14 +17,14 @@
     --ag-black:#0b0b0d;
     --ag-dark:#141417;
     --ag-card:#1b1b1f;
-    /* Gold = ScholarGuard brand gold. If the exact site hex differs, change these two lines only. */
-    --ag-accent:#ffc629;
-    --ag-accent-hot:#ffd34d;
-    --ag-navy:#1e2a5a;
+    /* Accent = brand azure (small highlights). Fills use brand navy --ag-navy #023466. */
+    --ag-accent:#2E86DE;
+    --ag-accent-hot:#4E9BE8;
+    --ag-navy:#023466;
     --ag-white:#ffffff;
     --ag-grey:#9a9aa2;
     --ag-line:#2a2a30;
-    --ag-gold:#f5b301;
+    --ag-gold:#2E86DE;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{background:var(--ag-black)}
@@ -53,7 +53,7 @@
   .dcirc.light{background:#f5f6f8;z-index:2}
   .dcirc.light .t{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;color:var(--ag-navy);margin-top:7px}
   .dcirc.light .t b{font-weight:800}
-  .dcirc.dark{border:1px solid var(--ag-line);margin-left:-26px}
+  .dcirc.dark{border:1px solid var(--ag-navy);margin-left:-26px;background:var(--ag-navy)}
   .dcirc.dark .ovl{width:92px;height:2px;background:#fff;margin-bottom:7px}
   .dcirc.dark .pre{font-family:'Oswald',sans-serif;font-weight:500;font-size:8.5px;letter-spacing:2px;color:#cfcfd6;margin-bottom:3px}
   .dcirc.dark .nm{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;color:#fff;text-align:center;line-height:1.3}
@@ -100,7 +100,7 @@
   .ans:hover{border-color:var(--ag-accent);background:#232327;transform:translateX(4px)}
   .ans .dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--ag-grey);flex:none;position:relative;transition:all .15s}
   .ans:hover .dot{border-color:var(--ag-accent-hot)}
-  .ans.sel{border-color:var(--ag-accent);background:#26210f}
+  .ans.sel{border-color:var(--ag-accent);background:#0d2338}
   .ans.sel .dot{border-color:var(--ag-accent);background:var(--ag-accent)}
   .navrow{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
   .back{background:none;border:none;color:var(--ag-grey);font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:10px 0}
@@ -146,7 +146,7 @@
   .garea span{color:var(--ag-grey);font-size:13.5px;font-weight:300;line-height:1.55}
   .garea span em{color:var(--ag-white);font-style:normal;font-weight:600}
 
-  .empathy{border-left:4px solid var(--ag-gold);background:#1d1a12;padding:16px 18px;border-radius:4px;margin:26px 0;font-size:15px;line-height:1.7;font-weight:300;color:#e8e2d2}
+  .empathy{border-left:4px solid var(--ag-gold);background:#0e1c2e;padding:16px 18px;border-radius:4px;margin:26px 0;font-size:15px;line-height:1.7;font-weight:300;color:#dbe6f2}
   .empathy b{color:#fff;font-weight:600}
 
   .ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
@@ -236,7 +236,7 @@
       <div class="gauge">
         <svg width="230" height="230" viewBox="0 0 230 230">
           <circle cx="115" cy="115" r="100" fill="none" stroke="#26262c" stroke-width="16"/>
-          <circle id="arc" cx="115" cy="115" r="100" fill="none" stroke="#ffc629" stroke-width="16"
+          <circle id="arc" cx="115" cy="115" r="100" fill="none" stroke="#2E86DE" stroke-width="16"
                   stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628"/>
         </svg>
         <div class="num"><b id="scorenum">0</b><span>A-Game Score</span></div>
@@ -382,7 +382,7 @@ const EMPATHY = [
 ];
 
 const TIERS = [
-  {min:92, name:"ELITE",       color:"#ffc629", txt:"#14142a", title:"Playing at an Elite level",
+  {min:92, name:"ELITE",       color:"#2E86DE", txt:"#04203f", title:"Playing at an Elite level",
    desc:"A bulletproof mental game — the standard Steven holds professionals to. The mission now is protecting and refining it: pressure only increases from here, and elite athletes train their mind the way they train their body."},
   {min:88, name:"EXCEPTIONAL", color:"#3a3a42", title:"Exceptional — knocking on the door",
    desc:"A genuinely strong foundation with specific, fixable gaps. Athletes in this band see the fastest jump to Elite because the raw material is already there — they need targeted tools, not more effort."},
@@ -478,7 +478,7 @@ function results(){
     if(n>=score){n=score;clearInterval(anim);}
     $('scorenum').textContent=n;
     arc.style.strokeDashoffset = 628 - (628*n/100);
-    arc.style.stroke = n>=92? '#ffc629' : n>=88? '#ffd34d' : n>=70? '#c9c9d1' : '#8a8a92';
+    arc.style.stroke = n>=92? '#2E86DE' : n>=88? '#4E9BE8' : n>=70? '#c9c9d1' : '#8a8a92';
   }, 14);
 
   // growth areas: 3 lowest normalized answers (reverse-scored items flipped)
@@ -487,7 +487,7 @@ function results(){
     const q = QUESTIONS[r.i];
     return `<div class="garea"><div class="rank">${k+1}</div><div>
       <b>${q.dim}</b>
-      <span>${q.fix}<br>→ Recommended: <em>${q.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#ffd34d;text-decoration:none;font-weight:600">Preview this module ›</a></span>
+      <span>${q.fix}<br>→ Recommended: <em>${q.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#4E9BE8;text-decoration:none;font-weight:600">Preview this module ›</a></span>
     </div></div>`;
   }).join('');
 
@@ -518,7 +518,7 @@ function updateGap(score){
 /* ---------- demo email ---------- */
 function demoSend(){
   const email = $('email').value.trim();
-  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#ffc629'; return; }
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; return; }
   $('email').style.borderColor='var(--ag-line)';
   const score = calcScore(), target = +$('target').value;
   const ga = answers.map((v,i)=>({area:QUESTIONS[i].dim, module:QUESTIONS[i].mod, rating:eff(i)}))
@@ -546,5 +546,4 @@ function restart(){
 }
 setProgress();
 </script>
-</body>
-</html>
+<

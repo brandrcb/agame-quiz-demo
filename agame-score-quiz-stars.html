@@ -17,10 +17,10 @@
     --ag-black:#0b0b0d;
     --ag-dark:#141417;
     --ag-card:#1b1b1f;
-    /* Gold = ScholarGuard brand gold. If the exact site hex differs, change these two lines only. */
-    --ag-accent:#ffc629;
-    --ag-accent-hot:#ffd34d;
-    --ag-navy:#1e2a5a;
+    /* Accent = brand azure (small highlights). Fills use brand navy --ag-navy #023466. */
+    --ag-accent:#2E86DE;
+    --ag-accent-hot:#4E9BE8;
+    --ag-navy:#023466;
     --ag-white:#ffffff;
     --ag-grey:#9a9aa2;
     --ag-line:#2a2a30;
@@ -139,7 +139,7 @@
   .garea span{color:var(--ag-grey);font-size:13.5px;font-weight:300;line-height:1.55}
   .garea span em{color:var(--ag-white);font-style:normal;font-weight:600}
 
-  .commit{border-left:4px solid var(--ag-accent);background:#211d10;padding:16px 18px;border-radius:4px;margin:26px 0;font-size:15px;line-height:1.7;font-weight:300;color:#efe8d2}
+  .commit{border-left:4px solid var(--ag-accent);background:#0e1c2b;padding:16px 18px;border-radius:4px;margin:26px 0;font-size:15px;line-height:1.7;font-weight:300;color:#dce7f3}
   .commit b{color:#fff;font-weight:600}
 
   .ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
@@ -159,7 +159,7 @@
   .dcirc.light{background:#f5f6f8;z-index:2}
   .dcirc.light .t{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;color:var(--ag-navy);margin-top:7px}
   .dcirc.light .t b{font-weight:800}
-  .dcirc.dark{border:1px solid var(--ag-line);margin-left:-26px}
+  .dcirc.dark{border:1px solid var(--ag-navy);margin-left:-26px;background:var(--ag-navy)}
   .dcirc.dark .ovl{width:92px;height:2px;background:#fff;margin-bottom:7px}
   .dcirc.dark .pre{font-family:'Oswald',sans-serif;font-weight:500;font-size:8.5px;letter-spacing:2px;color:#cfcfd6;margin-bottom:3px}
   .dcirc.dark .nm{font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;color:#fff;text-align:center;line-height:1.3}
@@ -284,7 +284,7 @@
       <div class="gauge">
         <svg width="230" height="230" viewBox="0 0 230 230">
           <circle cx="115" cy="115" r="100" fill="none" stroke="#26262c" stroke-width="16"/>
-          <circle id="arc" cx="115" cy="115" r="100" fill="none" stroke="#ffc629" stroke-width="16"
+          <circle id="arc" cx="115" cy="115" r="100" fill="none" stroke="#2E86DE" stroke-width="16"
                   stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628"/>
         </svg>
         <div class="num"><b id="scorenum">0</b><span>A-Game Score</span></div>
@@ -396,7 +396,7 @@ const AREAS = [
   {name:"Academics",                          hint:"Performs in the classroom as well as the field",           mod:"Win the Day: Time & Academic Performance",    fix:"The same mental tools, pointed at the classroom — focus, routines, and confidence."}
 ];
 const TIERS = [
-  {min:92, name:"ELITE",       color:"#ffc629", txt:"#14142a", title:"Playing at an Elite level",
+  {min:92, name:"ELITE",       color:"#2E86DE", txt:"#04203f", title:"Playing at an Elite level",
    desc:"A bulletproof mental game — the standard Steven holds professionals to. The mission now is protecting and refining it: pressure only increases from here, and elite athletes train their mind the way they train their body."},
   {min:88, name:"EXCEPTIONAL", color:"#3a3a42", title:"Exceptional — knocking on the door",
    desc:"A genuinely strong foundation with specific, fixable gaps. Athletes in this band see the fastest jump to Elite because the raw material is already there — they need targeted tools, not more effort."},
@@ -522,7 +522,7 @@ function results(){
     if(n>=score){n=score;clearInterval(anim);}
     $('scorenum').textContent=n;
     arc.style.strokeDashoffset = 628 - (628*n/100);
-    arc.style.stroke = n>=92? '#ffc629' : n>=88? '#ffd34d' : n>=70? '#c9c9d1' : '#8a8a92';
+    arc.style.stroke = n>=92? '#2E86DE' : n>=88? '#4E9BE8' : n>=70? '#c9c9d1' : '#8a8a92';
   }, 14);
 
   // growth areas: 3 lowest-rated
@@ -531,7 +531,7 @@ function results(){
     const a = AREAS[r.i];
     return `<div class="garea"><div class="rank">${k+1}</div><div>
       <b>${a.name} — ${r.v}/10</b>
-      <span>${a.fix}<br>→ Recommended: <em>${a.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#ffd34d;text-decoration:none;font-weight:600">Preview this module ›</a></span>
+      <span>${a.fix}<br>→ Recommended: <em>${a.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#4E9BE8;text-decoration:none;font-weight:600">Preview this module ›</a></span>
     </div></div>`;
   }).join('');
 
@@ -560,7 +560,7 @@ function updateGap(score){
 /* ---------- demo email ---------- */
 function demoSend(){
   const email = $('email').value.trim();
-  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#ffc629'; return; }
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; return; }
   $('email').style.borderColor='var(--ag-line)';
   const score = calcScore(), target = +$('target').value;
   const ga = ratings.map((v,i)=>({area:AREAS[i].name, module:AREAS[i].mod, stars:v}))
@@ -596,5 +596,4 @@ function restart(){
 }
 setProgress();
 </script>
-</body>
-</html>
+<
