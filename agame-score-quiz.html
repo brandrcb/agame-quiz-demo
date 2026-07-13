@@ -130,7 +130,7 @@
   input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:5px solid var(--ag-accent);cursor:grab}
   .tickrow{display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--ag-grey);text-transform:uppercase;margin-top:8px}
   .tickrow .elite{color:var(--ag-accent-hot)}
-  .gapgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+  .gapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
   .gcell{background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;padding:14px 10px;text-align:center}
   .gcell b{font-family:'Oswald',sans-serif;font-size:33.5px;font-weight:700;display:block;line-height:1.1}
   .gcell b.red{color:var(--ag-accent-hot)}
@@ -166,7 +166,7 @@
 
   @media(max-width:620px){
     .introgrid{grid-template-columns:1fr}
-    .gapgrid{grid-template-columns:repeat(2,1fr)}
+    .gapgrid{grid-template-columns:repeat(3,1fr)}
     .sgword .nm{font-size:15.5px;letter-spacing:2px}
     .sgword .pre{font-size:10px;letter-spacing:2px}
     .sgword .aglogo{height:42px}
@@ -262,7 +262,6 @@
         <div class="gcell"><b id="g-now">–</b><span>Today</span></div>
         <div class="gcell"><b class="red" id="g-target">–</b><span id="g-tiername">Your Goal</span></div>
         <div class="gcell"><b class="red" id="g-gap">–</b><span>Point Gap</span></div>
-        <div class="gcell"><b id="g-weeks">–</b><span id="g-weekslbl">Est. Weeks</span></div>
       </div>
       <p class="pathline" id="pathline"></p>
     </div>
@@ -285,9 +284,8 @@
       <h3>Start Closing The Gap <span class="red">This Week</span></h3>
       <p class="hint">A-Game Ready® online training is included FREE with every ScholarGuard™ policy — or available directly.</p>
       <div class="ctarow">
-        <a class="btn" href="https://steven-griffith.mykajabi.com/a-game-ready-info" target="_blank" rel="noopener">Explore The Course</a>
-        <a class="btn" href="https://steven-griffith.mykajabi.com/offers/WfP2huy3/checkout" target="_blank" rel="noopener" style="background:#1b1b1f;border:2px solid var(--ag-accent);color:#fff">Enroll Now</a>
-        <a class="btn ghost" href="https://www.getscholarguard.com/what-is-scholarguard" target="_blank" rel="noopener">ScholarGuard Protection</a>
+        <a class="btn" href="https://steven-griffith.mykajabi.com/offers/WfP2huy3/checkout" target="_blank" rel="noopener">Enroll Now</a>
+        <a class="btn ghost" href="https://steven-griffith.mykajabi.com/a-game-ready-info" target="_blank" rel="noopener">Learn More</a>
       </div>
     </div>
 
@@ -508,17 +506,14 @@ function targetTierName(t){ return t>=92? 'Elite' : t>=88? 'Exceptional' : 'Aver
 function updateGap(score){
   const t = +$('target').value;
   const gap = Math.max(0, t - score);
-  const weeks = gap===0? 0 : Math.max(2, Math.round(gap*0.75));
   const mods  = gap===0? 0 : Math.min(8, Math.max(2, Math.ceil(gap/4)));
   $('g-now').textContent = score;
   $('g-target').textContent = t;
   $('g-tiername').textContent = targetTierName(t)+' Goal';
   $('g-gap').textContent = gap;
-  $('g-weeks').textContent = gap===0? '✓' : '~'+weeks;
-  $('g-weekslbl').textContent = gap===0? 'Goal met' : 'Est. weeks*';
   $('pathline').innerHTML = gap===0
     ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
-    : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: approximately <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> over an estimated <b>${weeks} weeks</b> of consistent practice — starting with the three growth areas below. <span style="font-size:13px;color:#a4a4ac">*Estimate based on the program's 1%-better-per-day progression; individual pace varies.</span>`;
+    : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> that convert today's mental gaps into composure and confidence your athlete can repeat on demand — starting with the three growth areas below.`;
 }
 
 /* ---------- demo email ---------- */
