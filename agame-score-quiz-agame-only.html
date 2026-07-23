@@ -321,7 +321,7 @@
    CONFIG — production integration point
    ===================================================================== */
 const CONFIG = {
-  webhookUrl: "",   // e.g. Zapier/Make webhook or CRM endpoint. Leave "" for demo.
+  webhookUrl: "https://script.google.com/macros/s/AKfycbz0QD_CRWDLY4CXkFUh0QrErNdB1FBOmn_xymAZkGJLTNRqPKPC5J7JKma_Dn0NxgWqpQ/exec",   // Google Apps Script lead handler (Sheet + emails)
   courseUrl:  "https://steven-griffith.mykajabi.com/a-game-ready-coaching"
 };
 
@@ -522,7 +522,7 @@ function demoSend(){
     source: 'agame-score-quiz-agame-only', ts: new Date().toISOString()
   };
   if(CONFIG.webhookUrl){
-    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
   } else {
     console.log('A-Game Score demo payload:', payload);
   }
