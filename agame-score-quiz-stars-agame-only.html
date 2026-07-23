@@ -338,8 +338,8 @@
         <input type="email" id="email" placeholder="parent@email.com" aria-label="Email address">
         <button class="btn sm" onclick="demoSend()">Send Report</button>
       </div>
-      <div class="sent" id="sent">✓ Demo mode — in production this instantly emails the parent's score report (including their four written answers) and notifies the A-Game Coaching team.</div>
-      <p class="note">DEMO BUILD: form submission is not yet connected. On approval, wire <code>CONFIG.webhookUrl</code> (top of the script) to your email platform / CRM webhook — the payload includes all ten star ratings, the score, tier, target, commitment level, and the parent's written answers.</p>
+      <div class="sent" id="sent">✓ Sent — check your inbox for your athlete's full score report.</div>
+      <p class="note">We'll email your athlete's report. We never share your address.</p>
     </div>
 
     <div class="navrow" style="margin-top:26px">
@@ -561,7 +561,8 @@ function demoSend(){
     growth1_area: ga[0].area, growth1_module: ga[0].module,
     growth2_area: ga[1].area, growth2_module: ga[1].module,
     growth3_area: ga[2].area, growth3_module: ga[2].module,
-    ratings_summary: AREAS.map((a,i)=>a.name+' '+ratings[i]+'/10').join(', '),
+    // every rated area with its star value, one per line
+    answers_summary: AREAS.map((a,i)=>a.name+': '+ratings[i]+'/10').join('\n'),
     skillsWanted: $('pq1').value.trim(),
     holdingBack:  $('pq2').value.trim(),
     ifNoChange:   $('pq3').value.trim(),
