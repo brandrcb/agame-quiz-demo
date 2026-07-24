@@ -155,8 +155,11 @@
   .demo{margin-top:34px;border:1px dashed #55555e;border-radius:6px;padding:20px 22px}
   .demo h4{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:2px;font-size:14.5px;color:var(--ag-grey);margin-bottom:10px}
   .demo .row{display:flex;gap:10px;flex-wrap:wrap}
-  .demo input[type=email]{flex:1;min-width:220px;background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:15.5px}
+  .demo input[type=email],.demo input[type=text]{flex:1;min-width:220px;background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:15.5px}
   .demo input:focus{outline:none;border-color:var(--ag-accent)}
+  /* big single-line input used on the athlete-name step */
+  .tin{width:100%;max-width:420px;background:var(--ag-card);border:1px solid var(--ag-line);border-radius:5px;color:#fff;padding:16px 18px;font-family:'Inter',sans-serif;font-size:19px}
+  .tin:focus{outline:none;border-color:var(--ag-accent)}
   .demo .note{font-size:13.5px;color:#9ea4ae;margin-top:10px;line-height:1.6}
   .demo .sent{display:none;color:var(--ag-gold);font-size:15.5px;margin-top:10px}
 
@@ -221,10 +224,23 @@
     </div>
   </section>
 
+  <!-- ============ ATHLETE NAME — last step before the reveal ============ -->
+  <section class="screen" id="s-name">
+    <div class="dim">Almost There</div>
+    <h2 class="q">What is your athlete's name?</h2>
+    <p class="sub" style="margin-bottom:20px">We'll personalize their report. First name is fine.</p>
+    <input type="text" id="athleteName" class="tin" placeholder="e.g. Jake" aria-label="Your athlete's first name"
+           onkeydown="if(event.key==='Enter'){event.preventDefault();finishQuiz();}">
+    <div class="navrow">
+      <button class="back" onclick="backFromName()">‹ &nbsp;Back</button>
+      <button class="btn" onclick="finishQuiz()">See Their Score &nbsp;›</button>
+    </div>
+  </section>
+
   <!-- ============ RESULTS ============ -->
   <section class="screen" id="s-results">
-    <div class="dim">Your Athlete's Results</div>
-    <h1 style="font-size:clamp(28px,5vw,42px)">Here's How The <span class="red">A-Game</span> Can Help</h1>
+    <div class="dim" id="res-dim">Your Athlete's Results</div>
+    <h1 style="font-size:clamp(28px,5vw,42px)" id="res-h1">Here's How The <span class="red">A-Game</span> Can Help</h1>
 
     <div class="scorewrap">
       <div class="gauge">
@@ -246,7 +262,7 @@
 
     <!-- EXPECTATION SLIDER -->
     <div class="panel">
-      <h3>What's your expectation for your athlete? <span class="red">Slide to set it.</span></h3>
+      <h3 id="sliderhead">What's your expectation for your athlete? <span class="red">Slide to set it.</span></h3>
       <p class="hint">Move the bar and watch the path adjust — Average 70–87 · Exceptional 88–91 · Elite 92–100</p>
       <div class="sliderrow">
         <input type="range" id="target" min="70" max="100" value="92" step="1" aria-label="Expectation for your athlete">
@@ -262,7 +278,7 @@
 
     <!-- GROWTH AREAS -->
     <div class="panel">
-      <h3>Your Athlete's Top 3 <span class="red">Growth Areas</span></h3>
+      <h3 id="growthhead">Your Athlete's Top 3 <span class="red">Growth Areas</span></h3>
       <p class="hint">Ranked from your answers — each mapped to the A-Game Ready® module built to fix it.</p>
       <div class="growth" id="growth"></div>
     </div>
@@ -285,7 +301,11 @@
 
     <!-- DEMO EMAIL CAPTURE -->
     <div class="demo">
-      <h4>Email My Athlete's Full Score Report</h4>
+      <h4 id="capturehead">Email My Athlete's Full Score Report</h4>
+      <div class="row" style="margin-bottom:10px">
+        <input type="text" id="firstName" placeholder="Your first name" aria-label="Your first name">
+        <input type="text" id="lastName" placeholder="Your last name" aria-label="Your last name">
+      </div>
       <div class="row">
         <input type="email" id="email" placeholder="parent@email.com" aria-label="Email address">
         <button class="btn sm" onclick="demoSend()">Send Report</button>
@@ -390,6 +410,8 @@ let feelIdx = 0;
 const TOTAL = QUESTIONS.length + 1;
 
 const $ = id => document.getElementById(id);
+// The name is typed by the parent, so escape it before it touches innerHTML.
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 function show(id){
@@ -405,6 +427,25 @@ function setProgress(){
 }
 function start(){ step=0; renderQ(); }
 function goBack(){ if(step===0){step=-1;setProgress();show('s-intro');} else {step--;renderQ();} }
+
+/* ---------- athlete name step (last step before the reveal) ---------- */
+// The athlete's first name, or a neutral fallback if they skip it.
+function who(){ return ($('athleteName').value || '').trim(); }
+function whoOr(fallback){ return who() || fallback; }
+
+function showNameStep(){
+  $('progbar').style.width = '95%';
+  $('stepcount').innerHTML = '<b>One last thing</b>';
+  show('s-name');
+  setTimeout(()=>$('athleteName').focus(), 320);
+}
+function backFromName(){ step = QUESTIONS.length; renderQ(); }
+function finishQuiz(){
+  const el = $('athleteName');
+  if(!el.value.trim()){ el.style.borderColor='#2E86DE'; el.focus(); return; }
+  el.style.borderColor='var(--ag-line)';
+  results();
+}
 
 function renderQ(){
   setProgress();
@@ -424,7 +465,7 @@ function renderQ(){
     const pick = ()=>{
       if(isFeel){ feelIdx=i; } else { answers[step]=i+1; }
       d.classList.add('sel');
-      setTimeout(()=>{ step++; step>=TOTAL? results() : renderQ(); }, 220);
+      setTimeout(()=>{ step++; step>=TOTAL? showNameStep() : renderQ(); }, 220);
     };
     d.onclick=pick;
     d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}};
@@ -451,6 +492,16 @@ function results(){
   $('stepcount').innerHTML = '<b>Assessment complete</b>';
   const score = calcScore();
   const tier = tierFor(score);
+
+  // personalize the report with the athlete's name (falls back if left blank)
+  const aName = who(), nE = esc(aName);
+  const possTxt = aName ? aName + "'s" : "Your Athlete's";
+  const possHtml = nE ? nE + "&#39;s" : "Your Athlete&#39;s";
+  $('res-dim').textContent  = possTxt + ' Results';
+  $('res-h1').innerHTML     = "Here's How The <span class=\"red\">A-Game</span> Can Help" + (nE ? ' ' + nE : '');
+  $('growthhead').innerHTML = possHtml + ' Top 3 <span class="red">Growth Areas</span>';
+  $('sliderhead').innerHTML = "What's your expectation for " + (nE || 'your athlete') + '? <span class="red">Slide to set it.</span>';
+  $('capturehead').textContent = aName ? 'Email ' + aName + "'s Full Score Report" : "Email My Athlete's Full Score Report";
 
   // gauge animation
   $('tierbadge').textContent = tier.name;
@@ -499,21 +550,31 @@ function updateGap(score){
   $('g-tiername').textContent = targetTierName(t)+' Goal';
   $('g-gap').textContent = gap;
   $('pathline').innerHTML = gap===0
-    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
+    ? `${esc(whoOr('Your athlete'))} is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
     : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> that convert today's mental gaps into composure and confidence your athlete can repeat on demand — starting with the three growth areas below.`;
 }
 
 /* ---------- demo email ---------- */
 function demoSend(){
   const email = $('email').value.trim();
-  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; return; }
-  $('email').style.borderColor='var(--ag-line)';
+  const first = $('firstName').value.trim(), last = $('lastName').value.trim();
+  // Steven needs a real name to follow up, so require both before sending.
+  let bad = false;
+  [['firstName',first],['lastName',last]].forEach(([id,v])=>{
+    $(id).style.borderColor = v ? 'var(--ag-line)' : '#2E86DE';
+    if(!v) bad = true;
+  });
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; bad = true; }
+  else { $('email').style.borderColor='var(--ag-line)'; }
+  if(bad) return;
   const score = calcScore(), target = +$('target').value;
   const ga = answers.map((v,i)=>({area:QUESTIONS[i].dim, module:QUESTIONS[i].mod, rating:eff(i)}))
                     .sort((a,b)=>a.rating-b.rating).slice(0,3);
   // Flat fields = easy 1:1 merge fields in Zapier/Make email templates
   const payload = {
-    email, score, tier: tierFor(score).name, target,
+    email, parent_name: (first+' '+last).trim(), parent_first: first, parent_last: last,
+    athlete_name: who(),
+    score, tier: tierFor(score).name, target,
     gap: Math.max(0, target - score),
     feel: FEEL.opts[feelIdx],
     // every question with the parent's chosen answer, one per line
@@ -532,6 +593,8 @@ function demoSend(){
 }
 function restart(){
   answers = new Array(QUESTIONS.length).fill(0); feelIdx=0; step=-1;
+  ['athleteName','firstName','lastName','email'].forEach(id=>{ $(id).value=''; $(id).style.borderColor='var(--ag-line)'; });
+  $('sent').style.display='none';
   setProgress(); show('s-intro');
 }
 setProgress();

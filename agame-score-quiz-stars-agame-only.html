@@ -148,8 +148,11 @@
   .demo{margin-top:34px;border:1px dashed #55555e;border-radius:6px;padding:20px 22px}
   .demo h4{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:2px;font-size:14.5px;color:var(--ag-grey);margin-bottom:10px}
   .demo .row{display:flex;gap:10px;flex-wrap:wrap}
-  .demo input[type=email]{flex:1;min-width:220px;background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:15.5px}
+  .demo input[type=email],.demo input[type=text]{flex:1;min-width:220px;background:var(--ag-black);border:1px solid var(--ag-line);border-radius:4px;color:#fff;padding:13px 15px;font-family:'Inter',sans-serif;font-size:15.5px}
   .demo input:focus{outline:none;border-color:var(--ag-accent)}
+  /* single-line text input used for the athlete's name */
+  .tin{width:100%;background:var(--ag-card);border:1px solid var(--ag-line);border-radius:6px;color:#fff;padding:14px 15px;font-family:'Inter',sans-serif;font-size:17px}
+  .tin:focus{outline:none;border-color:var(--ag-accent)}
   .demo .note{font-size:13.5px;color:#9ea4ae;margin-top:10px;line-height:1.6}
   .demo .sent{display:none;color:var(--ag-accent);font-size:15.5px;margin-top:10px}
 
@@ -238,24 +241,29 @@
 
   <!-- ============ PARENT QUESTIONS ============ -->
   <section class="screen" id="s-parent">
-    <div class="dim">Step 2 of 2 — Four Questions For You</div>
+    <div class="dim">Step 2 of 2 — A Few Questions For You</div>
     <h2 class="q">Now, the questions that matter most</h2>
     <p class="sub" style="margin-bottom:24px">These come straight from Steven's 1-on-1 coaching application. Short, honest answers are perfect.</p>
 
     <div class="pq">
-      <label><span class="n">1.</span>What skills and tools would you like your student athlete to have?</label>
+      <label><span class="n">1.</span>What is your athlete's name?</label>
+      <input type="text" id="athleteName" class="tin" placeholder="e.g. Jake" aria-label="Your athlete's first name">
+      <div class="opt">We'll personalize their report. First name is fine.</div>
+    </div>
+    <div class="pq">
+      <label><span class="n">2.</span>What skills and tools would you like your student athlete to have?</label>
       <textarea id="pq1" placeholder="Confidence under pressure, bouncing back from mistakes, staying motivated..."></textarea>
     </div>
     <div class="pq">
-      <label><span class="n">2.</span>What do you think is stopping, stalling, or holding them back?</label>
+      <label><span class="n">3.</span>What do you think is stopping, stalling, or holding them back?</label>
       <textarea id="pq2" placeholder="Be honest — this is where the coaching starts."></textarea>
     </div>
     <div class="pq">
-      <label><span class="n">3.</span>What do you think will happen if their current situation does not improve — in academics, athletics, and in life?</label>
+      <label><span class="n">4.</span>What do you think will happen if their current situation does not improve — in academics, athletics, and in life?</label>
       <textarea id="pq3" placeholder="Think a season ahead, and a few years ahead."></textarea>
     </div>
     <div class="pq">
-      <label><span class="n">4.</span>What is your commitment level to helping them? (1–10)</label>
+      <label><span class="n">5.</span>What is your commitment level to helping them? (1–10)</label>
       <div class="srow" id="commitrow" style="margin-top:4px">
         <div class="lab"><b>Your Commitment</b><span>As their parent and biggest supporter</span></div>
         <div class="stars" id="commitstars"></div>
@@ -271,8 +279,8 @@
 
   <!-- ============ RESULTS ============ -->
   <section class="screen" id="s-results">
-    <div class="dim">Your Athlete's Results</div>
-    <h1 style="font-size:clamp(28px,5vw,42px)">Here's How The <span class="gold">A-Game</span> Can Help</h1>
+    <div class="dim" id="res-dim">Your Athlete's Results</div>
+    <h1 style="font-size:clamp(28px,5vw,42px)" id="res-h1">Here's How The <span class="gold">A-Game</span> Can Help</h1>
 
     <div class="scorewrap">
       <div class="gauge">
@@ -294,7 +302,7 @@
 
     <!-- EXPECTATION SLIDER -->
     <div class="panel">
-      <h3>What's your expectation for your athlete? <span class="gold">Slide to set it.</span></h3>
+      <h3 id="sliderhead">What's your expectation for your athlete? <span class="gold">Slide to set it.</span></h3>
       <p class="hint">Move the bar and watch the path adjust — Average 70–87 · Exceptional 88–91 · Elite 92–100</p>
       <div class="sliderrow">
         <input type="range" id="target" min="70" max="100" value="92" step="1" aria-label="Expectation for your athlete">
@@ -310,7 +318,7 @@
 
     <!-- GROWTH AREAS -->
     <div class="panel">
-      <h3>Your Athlete's Top 3 <span class="gold">Growth Areas</span></h3>
+      <h3 id="growthhead">Your Athlete's Top 3 <span class="gold">Growth Areas</span></h3>
       <p class="hint">The three lowest-rated areas — each mapped to the A-Game Ready® module built to strengthen it.</p>
       <div class="growth" id="growth"></div>
     </div>
@@ -333,7 +341,11 @@
 
     <!-- DEMO EMAIL CAPTURE -->
     <div class="demo">
-      <h4>Email My Athlete's Full Score Report</h4>
+      <h4 id="capturehead">Email My Athlete's Full Score Report</h4>
+      <div class="row" style="margin-bottom:10px">
+        <input type="text" id="firstName" placeholder="Your first name" aria-label="Your first name">
+        <input type="text" id="lastName" placeholder="Your last name" aria-label="Your last name">
+      </div>
       <div class="row">
         <input type="email" id="email" placeholder="parent@email.com" aria-label="Email address">
         <button class="btn sm" onclick="demoSend()">Send Report</button>
@@ -401,6 +413,10 @@ const TIERS = [
 let ratings = new Array(AREAS.length).fill(0);   // 1..10 each
 let commit = 0;                                   // 1..10
 const $ = id => document.getElementById(id);
+// The name is typed by the parent, so escape it before it touches innerHTML.
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function who(){ return ($('athleteName').value || '').trim(); }
+function whoOr(fallback){ return who() || fallback; }
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 /* ---------- star row builder ---------- */
@@ -489,9 +505,24 @@ function calcScore(){ return ratings.reduce((a,b)=>a+b,0); }   // 10 areas × 1�
 function tierFor(s){ return TIERS.find(t=>s>=t.min); }
 
 function results(){
+  // the athlete's name gates the reveal — it's what personalizes the report
+  const nameEl = $('athleteName');
+  if(!nameEl.value.trim()){ nameEl.style.borderColor='#2E86DE'; nameEl.focus(); nameEl.scrollIntoView({block:'center'}); return; }
+  nameEl.style.borderColor='var(--ag-line)';
+
   phase = 2; setProgress();
   const score = calcScore();
   const tier = tierFor(score);
+
+  // personalize the report with the athlete's name
+  const aName = who(), nE = esc(aName);
+  const possTxt = aName ? aName + "'s" : "Your Athlete's";
+  const possHtml = nE ? nE + "&#39;s" : "Your Athlete&#39;s";
+  $('res-dim').textContent  = possTxt + ' Results';
+  $('res-h1').innerHTML     = "Here's How The <span class=\"gold\">A-Game</span> Can Help" + (nE ? ' ' + nE : '');
+  $('growthhead').innerHTML = possHtml + ' Top 3 <span class="gold">Growth Areas</span>';
+  $('sliderhead').innerHTML = "What's your expectation for " + (nE || 'your athlete') + '? <span class="gold">Slide to set it.</span>';
+  $('capturehead').textContent = aName ? 'Email ' + aName + "'s Full Score Report" : "Email My Athlete's Full Score Report";
   $('tierbadge').textContent = tier.name;
   $('tierbadge').style.background = tier.color;
   $('tierbadge').style.color = tier.txt || '#fff';
@@ -541,21 +572,31 @@ function updateGap(score){
   $('g-tiername').textContent = targetTierName(t)+' Goal';
   $('g-gap').textContent = gap;
   $('pathline').innerHTML = gap===0
-    ? `Your athlete is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
+    ? `${esc(whoOr('Your athlete'))} is already at your <b>${targetTierName(t)}</b> expectation — the program now shifts to <b>protecting and maintaining</b> their edge under rising competition. Slide higher to see the next challenge.`
     : `The path from <b>${score}</b> to <b>${t} (${targetTierName(t)})</b>: <b>${mods} focused A-Game Ready® module${mods>1?'s':''}</b> that convert today's mental gaps into composure and confidence your athlete can repeat on demand — starting with the three growth areas below.`;
 }
 
 /* ---------- demo email ---------- */
 function demoSend(){
   const email = $('email').value.trim();
-  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; return; }
-  $('email').style.borderColor='var(--ag-line)';
+  const first = $('firstName').value.trim(), last = $('lastName').value.trim();
+  // Steven needs a real name to follow up, so require both before sending.
+  let bad = false;
+  [['firstName',first],['lastName',last]].forEach(([id,v])=>{
+    $(id).style.borderColor = v ? 'var(--ag-line)' : '#2E86DE';
+    if(!v) bad = true;
+  });
+  if(!/.+@.+\..+/.test(email)){ $('email').style.borderColor='#2E86DE'; bad = true; }
+  else { $('email').style.borderColor='var(--ag-line)'; }
+  if(bad) return;
   const score = calcScore(), target = +$('target').value;
   const ga = ratings.map((v,i)=>({area:AREAS[i].name, module:AREAS[i].mod, stars:v}))
                     .sort((a,b)=>a.stars-b.stars).slice(0,3);
   // Flat fields = easy 1:1 merge fields in Zapier/Make email templates
   const payload = {
-    email, score, tier: tierFor(score).name, target,
+    email, parent_name: (first+' '+last).trim(), parent_first: first, parent_last: last,
+    athlete_name: who(),
+    score, tier: tierFor(score).name, target,
     gap: Math.max(0, target - score),
     commitment: commit,
     growth1_area: ga[0].area, growth1_module: ga[0].module,
@@ -580,7 +621,10 @@ function restart(){
   $('starrows').innerHTML=''; $('commitstars').innerHTML='';
   $('commitval').textContent='–'; $('commitrow').classList.remove('done');
   $('toresults').disabled=true; $('tostep2').disabled=true;
-  ['pq1','pq2','pq3'].forEach(id=>$(id).value='');
+  ['pq1','pq2','pq3','athleteName','firstName','lastName','email'].forEach(id=>{
+    $(id).value=''; $(id).style.borderColor='var(--ag-line)';
+  });
+  $('sent').style.display='none';
   setProgress(); show('s-intro');
 }
 setProgress();
