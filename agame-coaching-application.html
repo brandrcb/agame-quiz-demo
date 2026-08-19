@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="agame-favicon-32.png" sizes="32x32">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="agame-apple-touch-icon.png">
 <title>A-Game One-on-One Coaching Application | A-Game Coaching</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -263,18 +266,18 @@
     <div class="fgrid">
       <div class="fld wide" id="f-pname">
         <label for="parentName">Parents' Names<span class="req">*</span></label>
-        <input type="text" id="parentName" class="tin" placeholder="e.g. Ryan &amp; Jane Brown" autocomplete="name">
+        <input type="text" id="parentName" name="parent_name" class="tin" placeholder="e.g. Ryan &amp; Jane Brown" autocomplete="name">
         <div class="help">Both parents/guardians is fine — however you'd like to be addressed.</div>
         <div class="errmsg">Please enter a name.</div>
       </div>
       <div class="fld" id="f-pemail">
         <label for="email">Email<span class="req">*</span></label>
-        <input type="email" id="email" class="tin" placeholder="parent@email.com" autocomplete="email" inputmode="email">
+        <input type="email" id="email" name="email" class="tin" placeholder="parent@email.com" autocomplete="email" inputmode="email">
         <div class="errmsg">Please enter a valid email address.</div>
       </div>
       <div class="fld" id="f-pphone">
         <label for="phone">Phone<span class="req">*</span></label>
-        <input type="tel" id="phone" class="tin" placeholder="770-555-1234" autocomplete="tel" inputmode="tel">
+        <input type="tel" id="phone" name="parent_phone" class="tin" placeholder="770-555-1234" autocomplete="tel" inputmode="tel">
         <div class="errmsg">Please enter a valid phone number.</div>
       </div>
     </div>
@@ -296,28 +299,28 @@
     <div class="fgrid">
       <div class="fld" id="f-aname">
         <label for="athleteName">Athlete's Name<span class="req">*</span></label>
-        <input type="text" id="athleteName" class="tin" placeholder="e.g. Jake">
+        <input type="text" id="athleteName" name="athlete_name" class="tin" placeholder="e.g. Jake">
         <div class="help">First name is fine — we'll personalize their report.</div>
         <div class="errmsg">Please enter your athlete's name.</div>
       </div>
       <div class="fld" id="f-aage">
         <label for="athleteAge">Age<span class="req">*</span></label>
-        <input type="text" id="athleteAge" class="tin" placeholder="e.g. 16" inputmode="numeric" maxlength="2">
+        <input type="text" id="athleteAge" name="athlete_age" class="tin" placeholder="e.g. 16" inputmode="numeric" maxlength="2">
         <div class="errmsg">Please enter an age.</div>
       </div>
       <div class="fld wide" id="f-aschool">
         <label for="athleteSchool">Current High School or College<span class="req">*</span></label>
-        <input type="text" id="athleteSchool" class="tin" placeholder="e.g. Roswell High School">
+        <input type="text" id="athleteSchool" name="athlete_school" class="tin" placeholder="e.g. Roswell High School">
         <div class="errmsg">Please enter a school.</div>
       </div>
       <div class="fld" id="f-asport">
         <label for="athleteSports">Sports Played<span class="req">*</span></label>
-        <input type="text" id="athleteSports" class="tin" placeholder="e.g. Football, Track">
+        <input type="text" id="athleteSports" name="athlete_sports" class="tin" placeholder="e.g. Football, Track">
         <div class="errmsg">Please enter at least one sport.</div>
       </div>
       <div class="fld" id="f-apos">
         <label for="athletePosition">Position(s) Played<span class="optl">optional</span></label>
-        <input type="text" id="athletePosition" class="tin" placeholder="e.g. Wide Receiver">
+        <input type="text" id="athletePosition" name="athlete_position" class="tin" placeholder="e.g. Wide Receiver">
       </div>
     </div>
     <p class="reqnote"><b>*</b> Required.</p>
@@ -350,15 +353,15 @@
 
     <div class="pq">
       <label><span class="n">1.</span>What skills and tools would you like your student athlete to have?</label>
-      <textarea id="pq1" placeholder="Confidence under pressure, bouncing back from mistakes, staying motivated..."></textarea>
+      <textarea id="pq1" name="skills_wanted" placeholder="Confidence under pressure, bouncing back from mistakes, staying motivated..."></textarea>
     </div>
     <div class="pq">
       <label><span class="n">2.</span>What do you think is stopping, stalling, or holding them back?</label>
-      <textarea id="pq2" placeholder="Be honest — this is where the coaching starts."></textarea>
+      <textarea id="pq2" name="holding_back" placeholder="Be honest — this is where the coaching starts."></textarea>
     </div>
     <div class="pq">
       <label><span class="n">3.</span>What do you think will happen if their current situation does not improve — in academics, athletics, and in life?</label>
-      <textarea id="pq3" placeholder="Think a season ahead, and a few years ahead."></textarea>
+      <textarea id="pq3" name="if_no_change" placeholder="Think a season ahead, and a few years ahead."></textarea>
     </div>
     <div class="pq">
       <label><span class="n">4.</span>What is your commitment level to helping them? (1–10)</label>
@@ -403,7 +406,7 @@
       <h3 id="sliderhead">What's your expectation for your athlete? <span class="gold">Slide to set it.</span></h3>
       <p class="hint">Move the bar and watch the path adjust — Average 70–87 · Exceptional 88–91 · Elite 92–100</p>
       <div class="sliderrow">
-        <input type="range" id="target" min="70" max="100" value="92" step="1" aria-label="Expectation for your athlete">
+        <input type="range" id="target" name="target_score" min="70" max="100" value="92" step="1" aria-label="Expectation for your athlete">
         <div class="tickrow"><span>70 · Average</span><span>88 · Exceptional</span><span class="elite">92–100 · Elite</span></div>
       </div>
       <div class="gapgrid">
@@ -429,11 +432,10 @@
 
     <!-- CTAs -->
     <div class="panel" style="border-top:3px solid var(--ag-accent)">
-      <h3>Start Closing The Gap <span class="gold">This Week</span></h3>
-      <p class="hint">A-Game Ready® online training gives your athlete the exact mental tools to close the gap — start today.</p>
+      <h3>What Happens <span class="gold">Next</span></h3>
+      <p class="hint">Steven personally reviews every application and will be in touch within <!-- TODO: confirm turnaround with Steven -->2 business days to talk through your athlete’s score and whether one-on-one coaching is the right fit.</p>
       <div class="ctarow">
-        <a class="btn" href="https://steven-griffith.mykajabi.com/offers/WfP2huy3/checkout" target="_blank" rel="noopener">Sign Up</a>
-        <a class="btn ghost" href="https://steven-griffith.mykajabi.com/a-game-ready-coaching" target="_blank" rel="noopener">Learn More</a>
+        <a class="btn" href="https://agamecoach.com/" target="_blank" rel="noopener">Visit AGameCoach.com</a>
       </div>
     </div>
 
@@ -474,8 +476,12 @@
    CONFIG — production integration point
    ===================================================================== */
 const CONFIG = {
-  webhookUrl: "https://script.google.com/macros/s/AKfycbz0QD_CRWDLY4CXkFUh0QrErNdB1FBOmn_xymAZkGJLTNRqPKPC5J7JKma_Dn0NxgWqpQ/exec",   // Google Apps Script lead handler (Sheet + emails)
-  courseUrl:  "https://steven-griffith.mykajabi.com/a-game-ready-coaching"
+  // TODO: paste the NEW Apps Script /exec URL here (new Sheet — this form's columns
+  // differ from the older quizzes, so it needs its own spreadsheet + script).
+  // Until this is filled in, submissions only log to the browser console.
+  webhookUrl: "",
+  // OLD script (points at the previous quiz sheet — wrong columns for this form):
+  // "https://script.google.com/macros/s/AKfycbz0QD_CRWDLY4CXkFUh0QrErNdB1FBOmn_xymAZkGJLTNRqPKPC5J7JKma_Dn0NxgWqpQ/exec"
 };
 
 /* ---------- the 10 mindset areas (from the 1-on-1 coaching application) ---------- */
@@ -698,7 +704,7 @@ function results(){
     const a = AREAS[r.i];
     return `<div class="garea"><div class="rank">${k+1}</div><div>
       <b>${a.name} — ${r.v}/10</b>
-      <span>${a.fix}<br>→ Recommended: <em>${a.mod}</em> &nbsp;·&nbsp; <a href="${CONFIG.courseUrl}" target="_blank" rel="noopener" style="color:#4E9BE8;text-decoration:none;font-weight:600">Preview this module ›</a></span>
+      <span>${a.fix}<br>→ Recommended: <em>${a.mod}</em></span>
     </div></div>`;
   }).join('');
 
@@ -752,9 +758,9 @@ function submitLead(force){
     growth3_area: ga[2].area, growth3_module: ga[2].module,
     // every rated area with its star value, one per line
     answers_summary: AREAS.map((a,i)=>a.name+': '+ratings[i]+'/10').join('\n'),
-    skillsWanted: $('pq1').value.trim(),
-    holdingBack:  $('pq2').value.trim(),
-    ifNoChange:   $('pq3').value.trim(),
+    skills_wanted: $('pq1').value.trim(),
+    holding_back:   $('pq2').value.trim(),
+    if_no_change:   $('pq3').value.trim(),
     source: 'agame-coaching-application', ts: new Date().toISOString()
   };
   if(!CONFIG.webhookUrl){
