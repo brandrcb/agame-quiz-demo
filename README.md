@@ -28,11 +28,11 @@ A parent works through it in one pass:
   expectation, plus the three lowest-rated growth areas with a recommended
   focus for each.
 
-**Lead capture is not yet connected.** `CONFIG.webhookUrl` is deliberately
-empty, pending a new Google Sheet and Apps Script deployment — this form's
-fields differ from those of the older quizzes, so it needs its own sheet and
-handler rather than reusing theirs. Until that URL is filled in, submissions
-only log to the browser console.
+**Lead capture is connected.** On submission the form posts to the shared
+Google Apps Script handler, which logs a row to the *A-Game Quiz Leads* sheet,
+emails the team a lead alert, and emails the parent their score report. The page
+only shows its confirmation checkmark once the handler confirms all of that —
+see [Lead capture](#lead-capture) below.
 
 ## The Pro application
 
@@ -48,10 +48,31 @@ follows the order of Steven's original questionnaire:
 - **Scored results** — the same A-Game Score, tier, adjustable standard, and
   top three growth areas.
 
-Its lead capture is **also** unconnected, and it needs its own destination: the
-field names differ from the parent application (`name`/`phone` rather than
-`parent_name`/`parent_phone`, `improving` rather than `skills_wanted`, no
-school or age), so it cannot share a sheet with either of the other forms.
+Its lead capture is connected to the **same** handler as every other form. Its
+field names do differ from the parent application (`name`/`phone` rather than
+`parent_name`/`parent_phone`, `improving` rather than `skills_wanted`, no school
+or age), but the handler normalizes every spelling onto one internal shape, and
+writes to the sheet by column name — so the pro-only fields (`Sport`,
+`Team / Org`) are just extra columns on the right. No second sheet needed.
+
+## Lead capture
+
+All four connected pages post to one Google Apps Script web app, set as
+`CONFIG.webhookUrl` at the top of each file's `<script>` block. On each
+submission the handler does three independent things:
+
+1. appends a row to the *A-Game Quiz Leads* Google Sheet,
+2. emails a lead alert to the team, with reply-to set to the applicant,
+3. emails the applicant their own score report.
+
+It answers with `{"ok":true,"logged":true,"alerted":true,"client":true}`. The
+form reads that answer and only shows its success message on `ok:true`; anything
+else shows a plain failure notice and a retry button. A `fetch` that merely
+resolves is not treated as proof the lead landed — that assumption is what
+previously let a real application vanish behind a green checkmark.
+
+The script, its deployment details and its test bench live in the private
+project repo, not here.
 
 ## Files
 
