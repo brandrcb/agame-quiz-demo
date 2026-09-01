@@ -441,20 +441,11 @@
    CONFIG — production integration point
    ===================================================================== */
 const CONFIG = {
-  // ⬇⬇  PASTE THIS FORM'S OWN /exec URL HERE  ⬇⬇
-  //
-  // This form has its own deployment, separate from every other A-Game form:
+  // This form's own deployment, separate from every other A-Game form:
   // its own Google Sheet ("A-Game Pro Applications") and its own Apps Script
   // project, from agame-pro-application-handler.gs in the private A-Game repo.
   // The older ScholarGuard quizzes keep their own, unrelated deployment.
-  //
-  // To create it: the sheet -> Extensions -> Apps Script -> paste the script ->
-  // Deploy -> New deployment -> Web app -> Execute as: Me,
-  // Who has access: Anyone -> copy the /exec URL into the line below.
-  //
-  // Left empty, the form cannot send and says so plainly on screen — it never
-  // shows the athlete a checkmark it has not earned.
-  webhookUrl: "",
+  webhookUrl: "https://script.google.com/macros/s/AKfycbxDDpH3wYkPPVvWB8qVdxq40Be4mGsrmQ3YBFcOorVuXrrxzHoAVmlQ8lVthw-qyt9M/exec",
   // The handler answers {"ok":true,...}. Reading that answer is what turns a
   // silent failure into a visible one. If a browser ever blocks the response
   // for CORS reasons, set this to false: submissions still send, the page just
