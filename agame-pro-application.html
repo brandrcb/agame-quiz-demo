@@ -406,11 +406,11 @@
 
     <!-- SUBMISSION CONFIRMATION -->
     <div class="demo">
-      <h4 id="capturehead">Application Submitted</h4>
-      <div class="sent" id="sent" style="display:block">✓ Your application is in — Steven has your full score report.</div>
-      <p class="note" id="sentnote">A copy of the report is on its way to your inbox. We never share your details.</p>
+      <h4 id="capturehead">Sending Your Application…</h4>
+      <div class="sent" id="sent" style="display:block">Sending your application to Steven…</div>
+      <p class="note" id="sentnote">One moment — this only takes a second.</p>
       <div class="row" id="retryrow" style="display:none;margin-top:12px">
-        <button class="btn sm" onclick="submitLead()">Try sending again</button>
+        <button class="btn sm" onclick="submitLead(true)">Try sending again</button>
       </div>
     </div>
 
@@ -441,12 +441,16 @@
    CONFIG — production integration point
    ===================================================================== */
 const CONFIG = {
-  // TODO: paste the NEW Apps Script /exec URL here (new Sheet — this form's columns
-  // differ from the older quizzes, so it needs its own spreadsheet + script).
-  // Until this is filled in, submissions only log to the browser console.
-  webhookUrl: "",
-  // OLD script (points at the previous quiz sheet — wrong columns for this form):
-  // "https://script.google.com/macros/s/AKfycbz0QD_CRWDLY4CXkFUh0QrErNdB1FBOmn_xymAZkGJLTNRqPKPC5J7JKma_Dn0NxgWqpQ/exec"
+  // This form's own deployment, separate from every other A-Game form:
+  // its own Google Sheet ("A-Game Pro Applications") and its own Apps Script
+  // project, from agame-pro-application-handler.gs in the private A-Game repo.
+  // The older ScholarGuard quizzes keep their own, unrelated deployment.
+  webhookUrl: "https://script.google.com/macros/s/AKfycbxDDpH3wYkPPVvWB8qVdxq40Be4mGsrmQ3YBFcOorVuXrrxzHoAVmlQ8lVthw-qyt9M/exec",
+  // The handler answers {"ok":true,...}. Reading that answer is what turns a
+  // silent failure into a visible one. If a browser ever blocks the response
+  // for CORS reasons, set this to false: submissions still send, the page just
+  // goes back to trusting that the request left the building.
+  verifyResponse: true
 };
 
 /* ---------- the 10 mindset areas (from the 1-on-1 coaching application) ---------- */
@@ -706,23 +710,51 @@ function submitLead(force){
     source: 'agame-pro-application', ts: new Date().toISOString()
   };
   if(!CONFIG.webhookUrl){
-    console.log('A-Game application payload:', payload);
-    submitted = true;
+    console.warn('A-Game: CONFIG.webhookUrl is empty — nothing was sent.', payload);
+    sendFailed('this form is not connected to the lead handler yet');
     return;
   }
+  sendPending();
   fetch(CONFIG.webhookUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
-    .then(()=>{
-      submitted = true;
-      $('sent').textContent = '✓ Your application is in — Steven has your full score report.';
-      $('sentnote').textContent = 'A copy of the report is on its way to ' + val('email') + '. We never share your details.';
-      $('retryrow').style.display = 'none';
+    .then(r=>{
+      if(!CONFIG.verifyResponse) return {ok:true};
+      if(!r.ok) throw new Error('the server answered HTTP ' + r.status);
+      return r.json();
     })
-    .catch(()=>{
-      // Never lose the lead silently — offer the athlete a retry.
-      $('sent').textContent = '⚠ We couldn’t send your application just now.';
-      $('sentnote').textContent = 'Your results below are still accurate. Please try again, or email steven@stevengriffith.com.';
-      $('retryrow').style.display = 'flex';
+    .then(res=>{
+      // A resolved fetch is not proof the lead landed: the handler reports the
+      // sheet write and each email separately, and answers ok:false if either
+      // of the two that matter failed. Trusting the resolve is what let a real
+      // application disappear with a checkmark on screen.
+      if(!res || res.ok !== true) throw new Error((res && res.errors || []).join('; ') || 'the lead handler reported a problem');
+      submitted = true;
+      sendOk();
+    })
+    .catch(err=>{
+      console.error('A-Game submit failed:', err);
+      sendFailed(err.message);
     });
+}
+
+/* ---------- submission status ----------
+   Never lose the lead silently: say plainly what happened and offer a retry. */
+function sendPending(){
+  $('capturehead').textContent = 'Sending Your Application…';
+  $('sent').textContent = 'Sending your application to Steven…';
+  $('sentnote').textContent = 'One moment — this only takes a second.';
+  $('retryrow').style.display = 'none';
+}
+function sendOk(){
+  $('capturehead').textContent = 'Application Submitted';
+  $('sent').textContent = '\u2713 Your application is in \u2014 Steven has your full score report.';
+  $('sentnote').textContent = 'A copy of the report is on its way to ' + val('email') + '. We never share your details.';
+  $('retryrow').style.display = 'none';
+}
+function sendFailed(why){
+  $('capturehead').textContent = 'Application Not Sent';
+  $('sent').textContent = '\u26a0 We couldn\u2019t send your application just now.';
+  $('sentnote').textContent = 'Your results below are still accurate. Please try again, or email steven@stevengriffith.com \u2014 ' + why + '.';
+  $('retryrow').style.display = 'flex';
 }
 function restart(){
   ratings = new Array(AREAS.length).fill(0); commit = 0; phase = -1; submitted = false;
@@ -734,9 +766,7 @@ function restart(){
   });
   document.querySelectorAll('.fld.err').forEach(f=>f.classList.remove('err'));
   refreshP1();
-  $('sent').textContent = '✓ Your application is in — Steven has your full score report.';
-  $('sentnote').textContent = 'A copy of the report is on its way to your inbox. We never share your details.';
-  $('retryrow').style.display='none';
+  sendPending();
   setProgress(); show('s-intro');
 }
 setProgress();
