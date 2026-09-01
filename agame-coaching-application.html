@@ -476,12 +476,20 @@
    CONFIG — production integration point
    ===================================================================== */
 const CONFIG = {
-  // Google Apps Script lead handler: writes the row to the "A-Game Quiz Leads"
-  // sheet and sends both emails (team alert + the applicant's own copy). One
-  // deployment serves every A-Game form — the handler tells them apart by
-  // `source` and accepts each form's field names. Source of truth for the
-  // script itself: agame-quiz-lead-handler.gs in the private A-Game repo.
-  webhookUrl: "https://script.google.com/macros/s/AKfycbz0QD_CRWDLY4CXkFUh0QrErNdB1FBOmn_xymAZkGJLTNRqPKPC5J7JKma_Dn0NxgWqpQ/exec",
+  // ⬇⬇  PASTE THIS FORM'S OWN /exec URL HERE  ⬇⬇
+  //
+  // This form has its own deployment, separate from every other A-Game form:
+  // its own Google Sheet ("A-Game Parent Applications") and its own Apps Script
+  // project, from agame-parent-application-handler.gs in the private A-Game repo.
+  // The older ScholarGuard quizzes keep their own, unrelated deployment.
+  //
+  // To create it: the sheet -> Extensions -> Apps Script -> paste the script ->
+  // Deploy -> New deployment -> Web app -> Execute as: Me,
+  // Who has access: Anyone -> copy the /exec URL into the line below.
+  //
+  // Left empty, the form cannot send and says so plainly on screen — it never
+  // shows the parent a checkmark it has not earned.
+  webhookUrl: "",
   // The handler answers {"ok":true,...}. Reading that answer is what turns a
   // silent failure into a visible one. If a browser ever blocks the response
   // for CORS reasons, set this to false: submissions still send, the page just

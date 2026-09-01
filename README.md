@@ -28,9 +28,9 @@ A parent works through it in one pass:
   expectation, plus the three lowest-rated growth areas with a recommended
   focus for each.
 
-**Lead capture is connected.** On submission the form posts to the shared
-Google Apps Script handler, which logs a row to the *A-Game Quiz Leads* sheet,
-emails the team a lead alert, and emails the parent their score report. The page
+**Lead capture posts to this form's own Google Apps Script handler**, which logs
+a row to the *A-Game Parent Applications* sheet, emails the team a lead alert,
+and emails the parent their score report. The page
 only shows its confirmation checkmark once the handler confirms all of that —
 see [Lead capture](#lead-capture) below.
 
@@ -48,30 +48,33 @@ follows the order of Steven's original questionnaire:
 - **Scored results** — the same A-Game Score, tier, adjustable standard, and
   top three growth areas.
 
-Its lead capture is connected to the **same** handler as every other form. Its
-field names do differ from the parent application (`name`/`phone` rather than
-`parent_name`/`parent_phone`, `improving` rather than `skills_wanted`, no school
-or age), but the handler normalizes every spelling onto one internal shape, and
-writes to the sheet by column name — so the pro-only fields (`Sport`,
-`Team / Org`) are just extra columns on the right. No second sheet needed.
+It has its own handler and its own *A-Game Pro Applications* sheet, because it
+is a different form for a different audience: the field names differ from the
+parent application (`name`/`phone` rather than `parent_name`/`parent_phone`,
+`improving` rather than `skills_wanted`, no school or age), it collects sport and
+team instead, and it recommends no A-Game Ready modules. Keeping it separate
+means its sheet carries no empty parent columns and its email copy — written to
+the athlete rather than about them — can be edited without touching any other
+form.
 
 ## Lead capture
 
-All four connected pages post to one Google Apps Script web app, set as
-`CONFIG.webhookUrl` at the top of each file's `<script>` block. On each
-submission the handler does three independent things:
+Each application form posts to **its own** Google Apps Script web app, set as
+`CONFIG.webhookUrl` at the top of that file's `<script>` block — a separate
+sheet and deployment per form, and a third, older one for the ScholarGuard
+quizzes. On each submission the handler does three independent things:
 
 1. appends a row to the *A-Game Quiz Leads* Google Sheet,
 2. emails a lead alert to the team, with reply-to set to the applicant,
 3. emails the applicant their own score report.
 
-It answers with `{"ok":true,"logged":true,"alerted":true,"client":true}`. The
+It answers with `{"ok":true,"handler":"…","logged":true,"alerted":true,"client":true}`. The
 form reads that answer and only shows its success message on `ok:true`; anything
 else shows a plain failure notice and a retry button. A `fetch` that merely
 resolves is not treated as proof the lead landed — that assumption is what
 previously let a real application vanish behind a green checkmark.
 
-The script, its deployment details and its test bench live in the private
+The scripts, their deployment details and the test bench live in the private
 project repo, not here.
 
 ## Files
