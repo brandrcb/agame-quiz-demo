@@ -4,16 +4,49 @@ Live, interactive demos of the "A-Game Score" athlete-mindset quiz and the
 one-on-one coaching application, built for Steven Griffith's A-Game Coaching
 (https://agamecoach.com/).
 
+The current funnel is two pages: the **Mindset Score™ quiz** is step 1, and the
+**coaching application** it links to is step 2.
+
 ## Live demo links
 
-GitHub Pages is enabled for this repo, so all four pages are live at:
+GitHub Pages is enabled for this repo, so all pages are live at:
 
+- **Mindset Score™ quiz (step 1):** https://brandrcb.github.io/agame-quiz-demo/agame-mindset-score-quiz.html
 - **Main quiz:** https://brandrcb.github.io/agame-quiz-demo/agame-score-quiz.html
 - **Star-rating variant:** https://brandrcb.github.io/agame-quiz-demo/agame-score-quiz-stars.html
-- **Coaching application (parents):** https://brandrcb.github.io/agame-quiz-demo/agame-coaching-application.html
+- **Coaching application (step 2, parents):** https://brandrcb.github.io/agame-quiz-demo/agame-coaching-application.html
 - **Pro application (athletes):** https://brandrcb.github.io/agame-quiz-demo/agame-pro-application.html
 
-## The coaching application
+## The Mindset Score™ quiz — step 1
+
+`agame-mindset-score-quiz.html` is the short front door, and the page the
+funnel starts on. It is deliberately the *opposite* of the application: no
+athlete details, no written questions, nothing that slows a visitor down.
+
+1. **Who's rating** — one tap: *I'm a Parent* or *I'm an Athlete*. That choice
+   rewords the whole quiz, so a parent rates their student athlete and an
+   athlete rates themselves.
+2. **Ten mindset areas** — the same ten areas as the application, 1–10 stars,
+   worded for whichever role was picked.
+3. **Name, email, and a dedication rating** — the only details it asks for.
+4. **Scored results** — the same A-Game Score™ gauge, tier, adjustable
+   expectation and top three growth areas as the application.
+
+The results page ends with the two ways forward:
+
+- **Join the Online Course** → https://agamecoach.com/program/
+- **Apply for 1-on-1 Coaching** → `agame-coaching-application.html` (step 2)
+
+> **Not connected yet.** `CONFIG.webhookUrl` in this file is still empty, so the
+> quiz scores correctly but cannot capture the lead. It needs its own Google
+> Sheet and Apps Script deployment, separate from the two application handlers:
+> the payload is different (a `role` field, a `dedication` rating, no athlete
+> details and no written answers) and its emails are quiz emails, not
+> application emails. Until that URL is pasted in, the results page tells the
+> visitor plainly that the emailed copy did not send, rather than showing a
+> checkmark over a lost lead.
+
+## The coaching application — step 2
 
 `agame-coaching-application.html` is the newer, parent-facing long-form page.
 A parent works through it in one pass:
@@ -81,14 +114,15 @@ project repo, not here.
 
 | File | What it is |
 |------|------------|
+| `agame-mindset-score-quiz.html` | **Step 1** — the short Mindset Score™ quiz: pick Parent or Athlete, rate the ten areas, leave name/email/dedication, get the score. Links on to the application. |
 | `agame-score-quiz.html` | Main quiz — "What's Your Athlete's A-Game Score?" Self-contained interactive demo. |
 | `agame-score-quiz-stars.html` | Alternate version using a star-rating style ("Rate Your Athlete's Mindset"). |
-| `agame-coaching-application.html` | Long-form one-on-one coaching application — parent and athlete details, ten mindset ratings, four written questions, and a scored results view. |
+| `agame-coaching-application.html` | **Step 2** — long-form one-on-one coaching application — parent and athlete details, ten mindset ratings, four written questions, and a scored results view. |
 | `agame-pro-application.html` | Athlete-facing version of the application — same ten ratings and scored report, asked in the first person. |
 | `agame-score-quiz-agame-only.html` | Main quiz with ScholarGuard branding removed (A-Game only). |
 | `agame-score-quiz-stars-agame-only.html` | Star-rating variant with ScholarGuard branding removed (A-Game only). |
 | `agame-logo-white.png` | Official A-Game Coaching logo (white, transparent) used in the quiz header. |
-| `favicon.ico` | Multi-size browser icon (16 and 32px), used by all four pages. |
+| `favicon.ico` | Multi-size browser icon (16 and 32px), used by every page. |
 | `agame-favicon-32.png` | 32px PNG favicon. |
 | `agame-apple-touch-icon.png` | 180px icon for iOS home-screen bookmarks. |
 
