@@ -227,10 +227,12 @@
     .fgrid{grid-template-columns:1fr;gap:15px}
   }
 
-  /* This page's name is a word longer than the applications', so its header
-     title gets a little more room before it wraps. Scoped above the mobile
-     breakpoint so it cannot undo the narrow max-width set for small screens. */
-  @media(min-width:621px){ .formtitle{max-width:390px} }
+  /* "Mindset Score™ Quiz" has to sit on one line, so the title gets more room
+     than the applications' and a slightly smaller cap on its type. Scoped above
+     the mobile breakpoint so it cannot undo the narrow width set for phones. */
+  @media(min-width:621px){
+    .formtitle{max-width:440px;font-size:clamp(15px,2.5vw,24px)}
+  }
 
   /* ---- role picker (quiz only): Athlete or Parent ---- */
   .rolegrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:8px 0 6px}
@@ -264,7 +266,7 @@
         <span class="nm"><i>A-GAME</i> COACHING</span>
       </span>
     </a>
-    <div class="formtitle">The <i>A-Game</i> Mindset<br>Score&trade; Quiz</div>
+    <div class="formtitle">The <i>A-Game</i><br>Mindset Score&trade; Quiz</div>
   </header>
 
   <div class="stepcount" id="stepcount" style="margin-top:22px"></div>
