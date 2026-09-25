@@ -253,7 +253,7 @@
       <div class="icard"><b>Instant Score</b><span>A 0–100 rating of your athlete's mental game, with their tier.</span></div>
       <div class="icard"><b>A Real Plan</b><span>The A-Game Ready® modules that strengthen their weakest areas.</span></div>
     </div>
-    <button class="btn" onclick="go(0)">Start Rating &nbsp;›</button>
+    <button class="btn" onclick="go(0)">Begin Application &nbsp;›</button>
     <p class="sub" style="font-size:14px;margin-top:16px;color:#a4a4ac">Created by Steven Griffith — 25+ years coaching athletes from high school to the NFL, NBA, MLB &amp; NHL.</p>
   </section>
 
@@ -332,22 +332,9 @@
     </div>
   </section>
 
-  <!-- ============ PAGE 3 — STAR RATINGS ============ -->
-  <section class="screen" id="s-stars">
-    <div class="dim" id="ratedim">Categories Rated: 0 — Rate All Ten Areas</div>
-    <h2 class="q" id="starhead">How does your athlete rate right now?</h2>
-    <p class="sub" style="margin-bottom:22px">1 star = really struggling &nbsp;·&nbsp; 10 stars = elite. Rate the last few months, not their best day.</p>
-    <div id="starrows"></div>
-    <div class="navrow">
-      <button class="back" onclick="go(1)">‹ &nbsp;Back</button>
-      <span class="remain" id="remain"></span>
-      <button class="btn" id="tostep2" disabled onclick="go(3)">Continue &nbsp;›</button>
-    </div>
-  </section>
-
-  <!-- ============ PAGE 4 — PARENT QUESTIONS ============ -->
+  <!-- ============ PAGE 3 — PARENT QUESTIONS ============ -->
   <section class="screen" id="s-parent">
-    <div class="dim">Step 4 of 4 — A Few Questions For You</div>
+    <div class="dim">Step 3 of 4 — A Few Questions For You</div>
     <h2 class="q">Now, the questions that matter most</h2>
     <p class="sub" style="margin-bottom:24px">These come straight from Steven's 1-on-1 coaching application. Short, honest answers are perfect.</p>
 
@@ -373,8 +360,22 @@
     </div>
 
     <div class="navrow">
+      <button class="back" onclick="go(1)">‹ &nbsp;Back</button>
+      <button class="btn" id="toresults" disabled onclick="go(3)">Continue &nbsp;›</button>
+    </div>
+  </section>
+
+  <!-- ============ PAGE 4 — STAR RATINGS (last: most applicants
+       have already rated in the Mindset Score quiz) ============ -->
+  <section class="screen" id="s-stars">
+    <div class="dim" id="ratedim">Categories Rated: 0 — Rate All Ten Areas</div>
+    <h2 class="q" id="starhead">How does your athlete rate right now?</h2>
+    <p class="sub" style="margin-bottom:22px">1 star = really struggling &nbsp;·&nbsp; 10 stars = elite. Rate the last few months, not their best day.</p>
+    <div id="starrows"></div>
+    <div class="navrow">
       <button class="back" onclick="go(2)">‹ &nbsp;Back</button>
-      <button class="btn" id="toresults" disabled onclick="results()">Submit &amp; See Their A-Game Score &nbsp;›</button>
+      <span class="remain" id="remain"></span>
+      <button class="btn" id="tostep2" disabled onclick="results()">Submit &amp; See Their A-Game Score &nbsp;›</button>
     </div>
   </section>
 
@@ -435,7 +436,7 @@
       <h3>What Happens <span class="gold">Next</span></h3>
       <p class="hint">Steven personally reviews every application and will be in touch within <!-- TODO: confirm turnaround with Steven -->2 business days to talk through your athlete’s score and whether one-on-one coaching is the right fit.</p>
       <div class="ctarow">
-        <a class="btn" href="https://agamecoach.com/" target="_blank" rel="noopener">Visit AGameCoach.com</a>
+        <a class="btn" href="https://agamecoach.com/success-stories/" target="_blank" rel="noopener">Read Success Stories</a>
       </div>
     </div>
 
@@ -613,7 +614,13 @@ function updateStarNav(){
 }
 
 /* ---------- navigation ---------- */
-// -1 intro · 0 parent info · 1 athlete info · 2 star ratings · 3 parent questions · 4 results
+// -1 intro · 0 parent info · 1 athlete info · 2 parent questions · 3 star ratings · 4 results
+//
+// The ten stars come LAST on this form. Anyone arriving from the Mindset
+// Score quiz has already rated them once, so the application leads with the
+// things only it asks for. Nothing about the submitted payload changes: it is
+// assembled from the same fields at submit time and the handler writes by
+// column name, so the sheet and its Apps Script are untouched by this order.
 let phase = -1;
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
@@ -625,15 +632,15 @@ function setProgress(){
   const pct =
     phase===0 ? 8 :
     phase===1 ? 24 :
-    phase===2 ? 40 + Math.round(rated / AREAS.length * 38) :
-    phase===3 ? 82 + (commit>0 ? 8 : 0) :
+    phase===2 ? 40 + (commit>0 ? 12 : 0) :
+    phase===3 ? 55 + Math.round(rated / AREAS.length * 45) :
     phase===4 ? 100 : 0;
   $('progbar').style.width = pct+'%';
   $('stepcount').innerHTML =
     phase===0 ? `Step <b>1</b> of 4 — Parent Info` :
     phase===1 ? `Step <b>2</b> of 4 — Athlete Info` :
-    phase===2 ? `Step <b>3</b> of 4 — Rate Your Athlete` :
-    phase===3 ? `Step <b>4</b> of 4 — Four Questions For You` :
+    phase===2 ? `Step <b>3</b> of 4 — Four Questions For You` :
+    phase===3 ? `Step <b>4</b> of 4 — Rate Your Athlete` :
     phase===4 ? `<b>Application complete</b>` : '';
 }
 function go(p){
@@ -642,12 +649,6 @@ function go(p){
   if(p===0){ show('s-pinfo'); }
   if(p===1){ show('s-ainfo'); }
   if(p===2){
-    if(!$('starrows').children.length) buildStarScreen();
-    const n = who();
-    $('starhead').textContent = n ? `How does ${n} rate right now?` : 'How does your athlete rate right now?';
-    show('s-stars');
-  }
-  if(p===3){
     if(!$('commitstars').children.length){
       starRow('commitstars', 10, ()=>commit, v=>{
         commit=v; $('commitval').textContent=v+'/10';
@@ -656,6 +657,12 @@ function go(p){
       });
     }
     show('s-parent');
+  }
+  if(p===3){
+    if(!$('starrows').children.length) buildStarScreen();
+    const n = who();
+    $('starhead').textContent = n ? `How does ${n} rate right now?` : 'How does your athlete rate right now?';
+    show('s-stars');
   }
   setProgress();
 }
